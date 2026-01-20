@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EnrollmentController;
@@ -32,6 +33,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
     Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
 });
+
+Route::middleware(['auth'])->group(function () {
+    // Instructor creates lessons
+    Route::get('/courses/{course}/lessons/create', [LessonController::class, 'create'])->name('lessons.create');
+    Route::post('/courses/{course}/lessons', [LessonController::class, 'store'])->name('lessons.store');
+
+    // View a lesson (enrolled students / owner instructor)
+    Route::get('/courses/{course}/lessons/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
+});
+
 
 // Student enrollment routes
 Route::middleware(['auth'])->group(function () {

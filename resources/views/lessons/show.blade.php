@@ -1,5 +1,3 @@
-<h1 style="color:red;">SHOW PAGE UPDATED ✅</h1>
-
 <h1>{{ $course->title }}</h1>
 <p>{{ $course->description }}</p>
 <p>Instructor: {{ $course->instructor->name }}</p>
@@ -30,6 +28,7 @@
     </ul>
 @endif
 
+{{-- Instructor owner can add lesson --}}
 @if(auth()->user()->role === 'instructor' && $course->instructor_id === auth()->id())
     <a href="{{ route('lessons.create', $course->id) }}">+ Add Lesson</a>
 @endif

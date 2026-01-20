@@ -45,7 +45,8 @@ class CourseController extends Controller
     }
 
     public function show(Course $course)
-    {
-        return view('courses.show', compact('course'));
-    }
+{
+    $course->load('lessons', 'instructor');
+    return view('courses.show', compact('course'));
+}
 }
