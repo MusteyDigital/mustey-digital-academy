@@ -5,6 +5,8 @@
 </head>
 <body>
     <h1>Welcome, {{ auth()->user()->name }}!</h1>
+<p><a href="{{ route('enrollments.my-courses') }}">My Courses</a></p>
+
 <h2>Your Courses</h2>
 
 @if($courses->isEmpty())

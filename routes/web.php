@@ -45,6 +45,12 @@ Route::middleware(['auth'])->group(function () {
 
 
 // Student enrollment routes
+Route::get('/student/dashboard', function () {
+    $courses = Auth::user()->coursesEnrolled;
+    return view('dashboards.student', compact('courses'));
+})->middleware(['auth'])->name('student.dashboard');
+
+// Student enrollment routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->name('courses.enroll');
     Route::get('/my-courses', [EnrollmentController::class, 'myCourses'])->name('enrollments.my-courses');
@@ -63,10 +69,5 @@ Route::get('/admin/dashboard', function () {
 Route::get('/instructor/dashboard', function () {
     return view('dashboards.instructor');
 })->middleware(['auth'])->name('instructor.dashboard');
-
-Route::get('/student/dashboard', function () {
-    return view('dashboards.student');
-})->middleware(['auth'])->name('student.dashboard');
-
 
 require __DIR__.'/auth.php';
