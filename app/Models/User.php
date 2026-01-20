@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -45,4 +46,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Courses this user teaches (if instructor)
+public function coursesTaught()
+{
+    return $this->hasMany(Course::class, 'instructor_id');
+}
+
+// Enrollments for this user (if student)
+public function enrollments()
+{
+    return $this->hasMany(Enrollment::class, 'user_id');
+}
+
+// Courses this student is enrolled in (via enrollments)
+public function coursesEnrolled()
+{
+    return $this->belongsToMany(
+        Course::class,
+        'enrollments',
+        'user_id',
+        'course_id'
+    )->withPivot('status')->withTimestamps();
+}
+
 }
