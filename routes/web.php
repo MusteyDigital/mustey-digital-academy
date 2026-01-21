@@ -24,6 +24,8 @@ Route::get('/dashboard', function () {
         $courses = $user->coursesEnrolled;
         return view('dashboards.student', compact('courses'));
     }
+    Route::delete('/courses/{course}/unenroll', [EnrollmentController::class, 'unenroll'])->name('courses.unenroll');
+
 })->middleware(['auth'])->name('dashboard');
 
 // Courses routes
@@ -53,6 +55,7 @@ Route::get('/student/dashboard', function () {
 // Student enrollment routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->name('courses.enroll');
+    Route::delete('/courses/{course}/unenroll', [EnrollmentController::class, 'unenroll'])->name('courses.unenroll');
     Route::get('/my-courses', [EnrollmentController::class, 'myCourses'])->name('enrollments.my-courses');
 });
 

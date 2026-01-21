@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Enrollment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EnrollmentController extends Controller
@@ -35,12 +36,25 @@ class EnrollmentController extends Controller
         return redirect()->back();
     }
 
-    public function myCourses()
+    public function unenroll(Course $course)
     {
         $user = Auth::user();
 
-        $courses = $user->coursesEnrolled;
+        // Only students can unenroll
+        if ($user->role !== 'student') {
+            abort(403);
+        }
 
+        Enrollment::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->delete();
+
+        return redirect()->route('enrollments.my-courses');
+    }
+
+    public function myCourses()
+    {
+        $courses = Auth::user()->coursesEnrolled;
         return view('enrollments.my-courses', compact('courses'));
     }
 }
