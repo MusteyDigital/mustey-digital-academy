@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Enrollment;
+use App\Models\LessonCompletion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,7 @@ class LessonController extends Controller
             abort(403);
         }
 
-        // Optional: ensure instructor owns the course
+        // Ensure instructor owns the course
         if ($course->instructor_id !== Auth::id()) {
             abort(403);
         }
@@ -64,9 +65,12 @@ class LessonController extends Controller
 
         $user = Auth::user();
 
+        // Default completion flag
+        $isCompleted = false;
+
         // Instructor who owns course can view
         if ($user->role === 'instructor' && $course->instructor_id === $user->id) {
-            return view('lessons.show', compact('course', 'lesson'));
+            return view('lessons.show', compact('course', 'lesson', 'isCompleted'));
         }
 
         // Student must be enrolled
@@ -79,14 +83,56 @@ class LessonController extends Controller
                 abort(403);
             }
 
-            return view('lessons.show', compact('course', 'lesson'));
+            // Check if this student already completed the lesson
+            $isCompleted = LessonCompletion::where('user_id', $user->id)
+                ->where('lesson_id', $lesson->id)
+                ->exists();
+
+            return view('lessons.show', compact('course', 'lesson', 'isCompleted'));
         }
 
         // Admin can view everything (optional)
         if ($user->role === 'admin') {
-            return view('lessons.show', compact('course', 'lesson'));
+            return view('lessons.show', compact('course', 'lesson', 'isCompleted'));
         }
 
         abort(403);
+    }
+
+    // Student: mark lesson as completed (must be enrolled)
+    public function complete(Course $course, Lesson $lesson)
+    {
+        // Ensure lesson belongs to course
+        if ($lesson->course_id !== $course->id) {
+            abort(404);
+        }
+
+        $user = Auth::user();
+
+        // Only students can complete lessons
+        if ($user->role !== 'student') {
+            abort(403);
+        }
+
+        // Student must be enrolled
+        $enrolled = Enrollment::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->exists();
+
+        if (!$enrolled) {
+            abort(403);
+        }
+
+        LessonCompletion::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'lesson_id' => $lesson->id,
+            ],
+            [
+                'completed_at' => now(),
+            ]
+        );
+
+        return redirect()->route('lessons.show', [$course->id, $lesson->id]);
     }
 }

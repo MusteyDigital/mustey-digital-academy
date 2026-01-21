@@ -25,6 +25,7 @@ class UserRegistrationTest extends TestCase
             'role' => 'student',
         ]);
 
-        $response->assertRedirect('/student/dashboard');
+$response->assertRedirect(route('student.dashboard', absolute: false));
+
     }
 }

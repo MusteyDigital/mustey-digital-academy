@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Enrollment;
-use Illuminate\Http\Request;
+use App\Models\LessonCompletion;
 use Illuminate\Support\Facades\Auth;
 
 class EnrollmentController extends Controller
@@ -13,12 +13,10 @@ class EnrollmentController extends Controller
     {
         $user = Auth::user();
 
-        // Only students can enroll
         if ($user->role !== 'student') {
             abort(403);
         }
 
-        // Prevent duplicate enrollment
         $already = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)
             ->exists();
@@ -40,7 +38,6 @@ class EnrollmentController extends Controller
     {
         $user = Auth::user();
 
-        // Only students can unenroll
         if ($user->role !== 'student') {
             abort(403);
         }
@@ -54,7 +51,33 @@ class EnrollmentController extends Controller
 
     public function myCourses()
     {
-        $courses = Auth::user()->coursesEnrolled;
-        return view('enrollments.my-courses', compact('courses'));
+        $user = Auth::user();
+
+        // IMPORTANT: load lessons with each course
+        $courses = $user->coursesEnrolled()->with('lessons')->get();
+
+        $progress = [];
+
+        foreach ($courses as $course) {
+            $lessonIds = $course->lessons->pluck('id');
+
+            $totalLessons = $lessonIds->count();
+
+            $completedLessons = $totalLessons > 0
+                ? LessonCompletion::where('user_id', $user->id)
+                    ->whereIn('lesson_id', $lessonIds)
+                    ->count()
+                : 0;
+
+            $percent = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
+
+            $progress[$course->id] = [
+                'completed' => $completedLessons,
+                'total' => $totalLessons,
+                'percent' => $percent,
+            ];
+        }
+
+        return view('enrollments.my-courses', compact('courses', 'progress'));
     }
 }

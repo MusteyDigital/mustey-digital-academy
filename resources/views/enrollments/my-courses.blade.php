@@ -20,6 +20,14 @@
                                 </a>
                                 <div class="text-sm text-gray-600">
                                     Status: {{ $course->pivot->status ?? 'enrolled' }}
+				    @php
+    $p = $progress[$course->id] ?? ['completed' => 0, 'total' => 0, 'percent' => 0];
+@endphp
+
+<div class="text-sm text-gray-600 mt-1">
+    Progress: {{ $p['completed'] }}/{{ $p['total'] }} ({{ $p['percent'] }}%)
+</div>
+
                                 </div>
 <form method="POST" action="{{ route('courses.unenroll', $course->id) }}" class="mt-2">
     @csrf

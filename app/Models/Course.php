@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Course;
+use App\Models\Enrollment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,6 +44,10 @@ public function students()
 public function coursesTaught()
 {
     return $this->hasMany(Course::class, 'instructor_id');
+}
+public function enrollments()
+{
+    return $this->hasMany(Enrollment::class);
 }
 
 }

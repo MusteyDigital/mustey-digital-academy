@@ -1,34 +1,41 @@
-<h1>{{ $course->title }}</h1>
-<p>{{ $course->description }}</p>
-<p>Instructor: {{ $course->instructor->name }}</p>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ $course->title }} — {{ $lesson->title }}
+        </h2>
+    </x-slot>
 
-{{-- Student enroll button --}}
-@if(auth()->user()->role === 'student')
-    <form method="POST" action="{{ route('courses.enroll', $course->id) }}">
-        @csrf
-        <button type="submit">Enroll</button>
-    </form>
-@endif
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 space-y-4">
 
-<hr>
+                <div class="text-gray-700 whitespace-pre-line">
+                    {{ $lesson->content ?? 'No content yet.' }}
+                </div>
 
-<h2>Lessons</h2>
+                @if($lesson->video_url)
+                    <div>
+                        <a class="underline" href="{{ $lesson->video_url }}" target="_blank">
+                            Watch Video
+                        </a>
+                    </div>
+                @endif
 
-@if($course->lessons->isEmpty())
-    <p>No lessons yet.</p>
-@else
-    <ul>
-        @foreach($course->lessons as $lesson)
-            <li>
-                <a href="{{ route('lessons.show', [$course->id, $lesson->id]) }}">
-                    {{ $lesson->title }}
-                </a>
-            </li>
-        @endforeach
-    </ul>
-@endif
+                {{-- Student: Mark completed / Completed badge --}}
+                @if(auth()->user()->role === 'student')
+                    @if(!empty($isCompleted) && $isCompleted)
+                        <div class="p-3 rounded bg-green-100 text-green-800 font-semibold">
+                            ✅ Completed
+                        </div>
+                    @else
+                        <form method="POST" action="{{ route('lessons.complete', [$course->id, $lesson->id]) }}">
+                            @csrf
+                            <x-primary-button>Mark as Completed</x-primary-button>
+                        </form>
+                    @endif
+                @endif
 
-{{-- Instructor owner can add lesson --}}
-@if(auth()->user()->role === 'instructor' && $course->instructor_id === auth()->id())
-    <a href="{{ route('lessons.create', $course->id) }}">+ Add Lesson</a>
-@endif
+            </div>
+        </div>
+    </div>
+</x-app-layout>

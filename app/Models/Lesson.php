@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\LessonCompletion;
+
 
 class Lesson extends Model
 {
@@ -26,5 +28,10 @@ class Lesson extends Model
     {
         return $this->hasMany(Lesson::class);
     }
+public function completions()
+{
+    return $this->hasMany(LessonCompletion::class);
+}
+
 
 }

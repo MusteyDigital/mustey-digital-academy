@@ -43,6 +43,12 @@ Route::middleware(['auth'])->group(function () {
 
     // View a lesson (enrolled students / owner instructor)
     Route::get('/courses/{course}/lessons/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
+    Route::post('/courses/{course}/lessons/{lesson}/complete', [LessonController::class, 'complete'])
+    ->name('lessons.complete');
+    Route::post('/courses/{course}/lessons/{lesson}/complete', [LessonController::class, 'complete'])
+    ->name('lessons.complete');
+
+
 });
 
 
