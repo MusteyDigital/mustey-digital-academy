@@ -35,6 +35,30 @@
                     @endif
                 @endif
 
+                <hr>
+
+            @if(session('success'))
+                <p style="color: green;">{{ session('success') }}</p>
+            @endif
+
+            {{-- STUDENT: Mark Attendance --}}
+            @if(auth()->user()->role === 'student')
+                <form method="POST" action="{{ route('attendance.store', [$course->id, $lesson->id]) }}">
+                    @csrf
+                    <x-primary-button>Mark Attendance</x-primary-button>
+                </form>
+            @endif
+
+            {{-- INSTRUCTOR/ADMIN: View Attendance --}}
+            @if(in_array(auth()->user()->role, ['instructor', 'admin']))
+                <p class="mt-3">
+                    <a class="underline" href="{{ route('attendance.index', [$course->id, $lesson->id]) }}">
+                        View Attendance List
+                    </a>
+                </p>
+            @endif
+
+
             </div>
         </div>
     </div>

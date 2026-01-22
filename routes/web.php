@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
 use App\Http\Controllers\QuizAttemptController;
@@ -73,7 +74,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/courses/{course}/lessons/{lesson}/complete', [LessonController::class, 'complete'])
     ->name('lessons.complete');
 
-
 });
 
 
@@ -95,6 +95,17 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware(['auth'])->group(function () {
+    // Student mark attendance
+    Route::post('/courses/{course}/lessons/{lesson}/attendance', [AttendanceController::class, 'store'])
+        ->name('attendance.store');
+
+    // Instructor/Admin view attendance
+    Route::get('/courses/{course}/lessons/{lesson}/attendance', [AttendanceController::class, 'index'])
+        ->name('attendance.index');
+});
+
 
 Route::get('/admin/dashboard', function () {
     return view('dashboards.admin');
