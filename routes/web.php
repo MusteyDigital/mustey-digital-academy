@@ -34,6 +34,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
     Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('/courses/{course}/session', [CourseController::class, 'editSession'])->name('courses.session.edit');
+    Route::put('/courses/{course}/session', [CourseController::class, 'updateSession'])->name('courses.session.update');
+
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -76,7 +79,15 @@ Route::get('/admin/dashboard', function () {
 })->middleware(['auth'])->name('admin.dashboard');
 
 Route::get('/instructor/dashboard', function () {
-    return view('dashboards.instructor');
+    $user = Auth::user();
+
+    if ($user->role !== 'instructor') {
+        abort(403);
+    }
+
+    $courses = $user->coursesTaught()->get();
+
+    return view('dashboards.instructor', compact('courses'));
 })->middleware(['auth'])->name('instructor.dashboard');
 
 require __DIR__.'/auth.php';

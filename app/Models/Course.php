@@ -14,6 +14,8 @@ class Course extends Model
     protected $fillable = [
         'title',
         'description',
+        'meeting_url',
+        'starts_at',
         'instructor_id',
     ];
 
