@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuizQuestionController;
+use App\Http\Controllers\QuizAttemptController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CourseController;
@@ -38,6 +41,25 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/courses/{course}/session', [CourseController::class, 'updateSession'])->name('courses.session.update');
 
 });
+
+Route::middleware(['auth'])->group(function () {
+
+    // Instructor create quiz
+    Route::get('/courses/{course}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+    Route::post('/courses/{course}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+
+    // Show quiz: instructor manage, student take
+    Route::get('/courses/{course}/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+
+    // Instructor add questions
+    Route::get('/courses/{course}/quizzes/{quiz}/questions/create', [QuizQuestionController::class, 'create'])->name('quiz-questions.create');
+    Route::post('/courses/{course}/quizzes/{quiz}/questions', [QuizQuestionController::class, 'store'])->name('quiz-questions.store');
+
+    // Student submit + view result
+    Route::post('/courses/{course}/quizzes/{quiz}/submit', [QuizAttemptController::class, 'submit'])->name('quizzes.submit');
+    Route::get('/courses/{course}/quizzes/{quiz}/result', [QuizAttemptController::class, 'result'])->name('quizzes.result');
+});
+
 
 Route::middleware(['auth'])->group(function () {
     // Instructor creates lessons

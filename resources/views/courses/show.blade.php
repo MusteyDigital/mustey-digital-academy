@@ -32,6 +32,28 @@
 @endif
 
 <hr>
+<h2>Quizzes</h2>
+
+@if(auth()->user()->role === 'instructor' && $course->instructor_id === auth()->id())
+    <p>
+        <a href="{{ route('quizzes.create', $course->id) }}">+ Create Quiz</a>
+    </p>
+@endif
+
+{{-- If at least one quiz exists show link --}}
+@php
+    $firstQuiz = \App\Models\Quiz::where('course_id', $course->id)->latest()->first();
+@endphp
+
+@if($firstQuiz)
+    <p>
+        <a href="{{ route('quizzes.show', [$course->id, $firstQuiz->id]) }}">Open Latest Quiz: {{ $firstQuiz->title }}</a>
+    </p>
+@else
+    <p>No quizzes yet.</p>
+@endif
+
+<hr>
 
 <h2>Lessons</h2>
 
