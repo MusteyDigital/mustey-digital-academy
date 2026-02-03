@@ -1,24 +1,34 @@
-*.log
+# OS / editor
+*.swp
+*.swo
 .DS_Store
+
+# Node
+node_modules/
+
+# Laravel
+/vendor/
 .env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
-/node_modules
-/public/build
-/public/hot
-/public/storage
 /storage/*.key
-/storage/pail
-/vendor
-Homestead.json
-Homestead.yaml
-Thumbs.db
+/storage/logs/
+bootstrap/cache/
+
+# Accidental files from copy/paste
+present
+@php
+email
+enrolled
+serial
+student
+id
+id))
+format('M
+get()
+group(function
+links()
+name
+name('*
+route('*
+assertDatabaseCount('*
+assertDatabaseHas('*
+compose.yaml.save
