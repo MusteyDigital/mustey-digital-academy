@@ -10,13 +10,21 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lesson_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('status', ['present'])->default('present');
+
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+
+            // ✅ MUST be nullable for LIVE attendance
+            $table->foreignId('lesson_id')->nullable()->constrained()->nullOnDelete();
+
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            $table->string('status')->default('present');
             $table->timestamp('marked_at')->nullable();
+
             $table->timestamps();
 
-            $table->unique(['lesson_id', 'user_id']); // prevent double marking
+            // Optional but recommended: stop duplicates (per course+lesson+user)
+            $table->unique(['course_id', 'lesson_id', 'user_id']);
         });
     }
 

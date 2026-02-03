@@ -14,11 +14,13 @@ class QuizController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role !== 'instructor') {
+        // instructor OR admin (optional)
+        if (!in_array($user->role, ['instructor', 'admin'])) {
             abort(403);
         }
 
-        if ($course->instructor_id !== $user->id) {
+        // If instructor, must own the course
+        if ($user->role === 'instructor' && $course->instructor_id !== $user->id) {
             abort(403);
         }
 
@@ -30,11 +32,11 @@ class QuizController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role !== 'instructor') {
+        if (!in_array($user->role, ['instructor', 'admin'])) {
             abort(403);
         }
 
-        if ($course->instructor_id !== $user->id) {
+        if ($user->role === 'instructor' && $course->instructor_id !== $user->id) {
             abort(403);
         }
 
@@ -47,7 +49,9 @@ class QuizController extends Controller
             'title' => $validated['title'],
         ]);
 
-        return redirect()->route('quizzes.show', [$course->id, $quiz->id]);
+        return redirect()
+            ->route('quizzes.show', [$course->id, $quiz->id])
+            ->with('success', 'Quiz created successfully. Now add questions.');
     }
 
     // Show quiz (Instructor owner can manage; Student enrolled can take)
@@ -58,15 +62,14 @@ class QuizController extends Controller
         }
 
         $quiz->load('questions');
-
         $user = Auth::user();
 
-        // Instructor owner
+        // Instructor owner: manage
         if ($user->role === 'instructor' && $course->instructor_id === $user->id) {
             return view('quizzes.show', compact('course', 'quiz'));
         }
 
-        // Student enrolled
+        // Student enrolled: take
         if ($user->role === 'student') {
             $enrolled = $user->coursesEnrolled()->where('courses.id', $course->id)->exists();
             if (!$enrolled) abort(403);
@@ -74,11 +77,12 @@ class QuizController extends Controller
             return view('quizzes.take', compact('course', 'quiz'));
         }
 
-        // Admin optional
+        // Admin: manage
         if ($user->role === 'admin') {
             return view('quizzes.show', compact('course', 'quiz'));
         }
 
         abort(403);
     }
+    
 }

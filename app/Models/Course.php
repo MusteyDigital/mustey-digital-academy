@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Course;
-use App\Models\Enrollment;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,37 +18,33 @@ class Course extends Model
         'instructor_id',
     ];
 
+    protected $casts = [
+        'starts_at' => 'datetime',
+    ];
+
+    // Course belongs to an instructor (user)
     public function instructor()
     {
         return $this->belongsTo(User::class, 'instructor_id');
     }
 
+    // Course has many lessons
     public function lessons()
     {
         return $this->hasMany(Lesson::class);
     }
-public function students()
-{
-    return $this->belongsToMany(User::class, 'enrollments')
-        ->withPivot('status')
-        ->withTimestamps();
-}
 
+    // Course has many enrollments rows
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
 
-    public function coursesEnrolled()
-{
-    return $this->belongsToMany(Course::class, 'enrollments')
-        ->withPivot('status')
-        ->withTimestamps();
-}
-
-public function coursesTaught()
-{
-    return $this->hasMany(Course::class, 'instructor_id');
-}
-public function enrollments()
-{
-    return $this->hasMany(Enrollment::class);
-}
-
+    // Students enrolled in this course (many-to-many via enrollments)
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'enrollments')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
 }

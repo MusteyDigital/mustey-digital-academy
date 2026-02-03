@@ -1,22 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Attendance — {{ $course->title }} | {{ $lesson->title }}
+            Live Session Attendance
         </h2>
     </x-slot>
 
     <div class="py-6">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-4">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
 
-                <a class="underline" href="{{ route('lessons.show', [$course->id, $lesson->id]) }}">
-                    ← Back to Lesson
-                </a>
+                <p class="mb-4 font-semibold">
+                    Course: {{ $course->title }}
+                </p>
 
                 @if($attendances->isEmpty())
-                    <p>No attendance marked yet.</p>
+                    <p>No live attendance has been recorded yet.</p>
                 @else
-                    <table class="w-full border">
+                    <table class="min-w-full border">
                         <thead>
                             <tr class="border-b">
                                 <th class="text-left p-2">Student</th>
@@ -26,12 +26,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($attendances as $a)
+                            @foreach($attendances as $attendance)
                                 <tr class="border-b">
-                                    <td class="p-2">{{ $a->user->name }}</td>
-                                    <td class="p-2">{{ $a->user->email }}</td>
-                                    <td class="p-2">{{ $a->status }}</td>
-                                    <td class="p-2">{{ optional($a->marked_at)->format('Y-m-d H:i') }}</td>
+                                    <td class="p-2">{{ $attendance->user->name ?? 'N/A' }}</td>
+                                    <td class="p-2">{{ $attendance->user->email ?? 'N/A' }}</td>
+                                    <td class="p-2">{{ $attendance->status }}</td>
+                                    <td class="p-2">{{ optional($attendance->marked_at)->format('Y-m-d H:i:s') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

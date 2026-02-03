@@ -44,6 +44,7 @@ class AttendanceTest extends TestCase
         $response->assertStatus(302);
 
         $this->assertDatabaseHas('attendances', [
+            'course_id' => $course->id,
             'lesson_id' => $lesson->id,
             'user_id' => $student->id,
             'status' => 'present',
@@ -120,7 +121,15 @@ class AttendanceTest extends TestCase
             'content' => 'Hello',
         ]);
 
+        // Optional but recommended: student is enrolled (realistic scenario)
+        Enrollment::create([
+            'user_id' => $student->id,
+            'course_id' => $course->id,
+            'status' => 'enrolled',
+        ]);
+
         Attendance::create([
+            'course_id' => $course->id,   // ✅ FIX: required now
             'lesson_id' => $lesson->id,
             'user_id' => $student->id,
             'status' => 'present',

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class QuizAttemptController extends Controller
 {
-    // Student: submit answers and score
     public function submit(Request $request, Course $course, Quiz $quiz)
     {
         $user = Auth::user();
@@ -23,13 +22,15 @@ class QuizAttemptController extends Controller
 
         $quiz->load('questions');
 
-        // prevent multiple attempts for now
+        // prevent multiple attempts
         $existing = QuizAttempt::where('quiz_id', $quiz->id)
             ->where('user_id', $user->id)
             ->first();
 
         if ($existing) {
-            return redirect()->route('quizzes.result', [$course->id, $quiz->id]);
+            return redirect()
+                ->route('quizzes.result', [$course->id, $quiz->id])
+                ->with('success', 'You already submitted this quiz.');
         }
 
         $answers = $request->input('answers', []);
@@ -51,10 +52,11 @@ class QuizAttemptController extends Controller
             'taken_at' => now(),
         ]);
 
-        return redirect()->route('quizzes.result', [$course->id, $quiz->id]);
+        return redirect()
+            ->route('quizzes.result', [$course->id, $quiz->id])
+            ->with('success', 'Quiz submitted successfully.');
     }
 
-    // Student: view result
     public function result(Course $course, Quiz $quiz)
     {
         $user = Auth::user();

@@ -10,26 +10,42 @@ use Illuminate\Support\Facades\Auth;
 
 class QuizQuestionController extends Controller
 {
-    // Instructor: add question form
-    public function create(Course $course, Quiz $quiz)
+    private function ensureCanManageQuiz(Course $course, Quiz $quiz): void
     {
         $user = Auth::user();
 
-        if ($user->role !== 'instructor') abort(403);
-        if ($course->instructor_id !== $user->id) abort(403);
-        if ($quiz->course_id !== $course->id) abort(404);
+        if (!in_array($user->role, ['instructor', 'admin'])) {
+            abort(403);
+        }
 
-        return view('quizzes.questions.create', compact('course', 'quiz'));
+        // If instructor, must own the course
+        if ($user->role === 'instructor' && $course->instructor_id !== $user->id) {
+            abort(403);
+        }
+
+        // Quiz must belong to course
+        if ($quiz->course_id !== $course->id) {
+            abort(404);
+        }
     }
 
-    // Instructor: store question
+    // Instructor/Admin: add question form
+    public function create(Course $course, Quiz $quiz)
+    {
+        $this->ensureCanManageQuiz($course, $quiz);
+
+        // IMPORTANT: match your blade path
+        // If your file is resources/views/quizzes/questions/create.blade.php:
+        return view('quizzes.questions.create', compact('course', 'quiz'));
+
+        // If your file is resources/views/quiz-questions/create.blade.php instead, use:
+        // return view('quiz-questions.create', compact('course', 'quiz'));
+    }
+
+    // Instructor/Admin: store question
     public function store(Request $request, Course $course, Quiz $quiz)
     {
-        $user = Auth::user();
-
-        if ($user->role !== 'instructor') abort(403);
-        if ($course->instructor_id !== $user->id) abort(403);
-        if ($quiz->course_id !== $course->id) abort(404);
+        $this->ensureCanManageQuiz($course, $quiz);
 
         $validated = $request->validate([
             'question' => 'required|string',
@@ -50,6 +66,8 @@ class QuizQuestionController extends Controller
             'correct_option' => $validated['correct_option'],
         ]);
 
-        return redirect()->route('quizzes.show', [$course->id, $quiz->id]);
+        return redirect()
+            ->route('quizzes.show', [$course->id, $quiz->id])
+            ->with('success', 'Question added successfully.');
     }
 }
