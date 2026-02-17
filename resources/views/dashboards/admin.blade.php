@@ -1,4 +1,4 @@
-add here: <x-layouts.admin>
+<x-layouts.admin>
 
     {{-- Flash --}}
     @if(session('success'))
