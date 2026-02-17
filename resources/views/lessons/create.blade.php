@@ -1,5 +1,3 @@
-<h1 style="color:red;">SHOW PAGE UPDATED ✅</h1>
-
 
 <h1>Create Lesson for: {{ $course->title }}</h1>
 
