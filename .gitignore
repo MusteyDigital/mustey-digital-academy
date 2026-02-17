@@ -32,3 +32,4 @@ route('*
 assertDatabaseCount('*
 assertDatabaseHas('*
 compose.yaml.save
+/public/storage
