@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\StudentProgressController;
 use App\Http\Controllers\AttendanceController;
@@ -12,6 +13,9 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EnrollmentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+
+// ✅ Instructor Controllers (NEW)
+use App\Http\Controllers\Instructor\CourseManageController;
 
 // Admin Controllers
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -47,10 +51,36 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
     Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+    Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
+    Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
 
     // Live session settings (meeting_url, starts_at)
     Route::get('/courses/{course}/session', [CourseController::class, 'editSession'])->name('courses.session.edit');
     Route::put('/courses/{course}/session', [CourseController::class, 'updateSession'])->name('courses.session.update');
+});
+
+
+// ====================== INSTRUCTOR COURSE MANAGEMENT (NEW for Step 4) ======================
+Route::middleware(['auth'])->group(function () {
+
+    // ✅ Uses your Gate: manage-courses (admin OR instructor)
+    Route::middleware('can:manage-courses')->prefix('instructor')->name('instructor.')->group(function () {
+
+        Route::get('/courses', [CourseManageController::class, 'index'])
+            ->name('courses.index');
+
+        Route::get('/courses/{course}/edit', [CourseManageController::class, 'edit'])
+            ->name('courses.edit');
+
+        Route::put('/courses/{course}', [CourseManageController::class, 'update'])
+            ->name('courses.update');
+
+        Route::delete('/courses/{course}', [CourseManageController::class, 'destroy'])
+            ->name('courses.destroy');
+
+    });
+
 });
 
 
@@ -110,8 +140,23 @@ Route::middleware(['auth'])->group(function () {
         ->name('certificates.download');
 });
 
-// ✅ Public verify route (no auth) — FIXED PARAM NAME
-Route::get('/certificates/verify/{serial}', [CertificateController::class, 'verify'])
+
+// ====================== NOTIFICATIONS ======================
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'read'])
+        ->name('notifications.read');
+
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])
+        ->name('notifications.readAll');
+
+});
+
+// ✅ Public verification by token (secure)
+Route::get('/certificates/verify/{token}', [CertificateController::class, 'verify'])
     ->name('certificates.verify');
 
 
@@ -164,6 +209,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Courses
     Route::get('/courses', [AdminCourseController::class, 'index'])->name('courses.index');
+    Route::delete('/courses/{course}', [AdminCourseController::class, 'destroy'])->name('courses.destroy');
 
     // Enrollments
     Route::get('/enrollments', [AdminEnrollmentController::class, 'index'])->name('enrollments.index');

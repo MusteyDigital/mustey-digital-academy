@@ -14,6 +14,13 @@
     <div class="py-10">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+            {{-- ✅ Flash success --}}
+            @if(session('success'))
+                <div class="rounded-lg border border-green-200 bg-green-50 p-3 text-green-800">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             {{-- Search --}}
             <div class="bg-white shadow-sm sm:rounded-lg p-6 border">
                 <form method="GET" class="flex flex-wrap gap-2 items-end">
@@ -76,6 +83,24 @@
                             <a class="underline text-blue-600 text-sm" href="{{ route('courses.show', $course->id) }}">
                                 Open Course →
                             </a>
+                        </div>
+
+                        {{-- ✅ Admin actions --}}
+                        <div class="pt-3 border-t flex items-center justify-between gap-2">
+                            <span class="text-xs text-gray-500">
+                                Manage:
+                            </span>
+
+                            <form method="POST" action="{{ route('admin.courses.destroy', $course->id) }}"
+                                  onsubmit="return confirm('Delete this course? This cannot be undone.');">
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                        class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 hover:bg-red-100">
+                                    🗑 Delete
+                                </button>
+                            </form>
                         </div>
                     </div>
                 @empty

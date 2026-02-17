@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CertificateIssued;
 use App\Models\Certificate;
 use App\Models\Course;
-use Illuminate\Support\Facades\Auth;
+use App\Notifications\CertificateReady; // ✅ ADD THIS
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class CertificateController extends Controller
 {
@@ -28,6 +31,7 @@ class CertificateController extends Controller
 
         // Require all lessons completed
         $totalLessons = $course->lessons()->count();
+
         if ($totalLessons > 0) {
             $completedCount = $user->completedLessons()
                 ->where('lessons.course_id', $course->id)
@@ -38,25 +42,59 @@ class CertificateController extends Controller
             }
         }
 
-        // Create or fetch certificate
+        // ✅ Create or fetch certificate (serial + token)
         $certificate = Certificate::firstOrCreate(
             [
-                'user_id' => $user->id,
+                'user_id'   => $user->id,
                 'course_id' => $course->id,
             ],
             [
-                // generate once (first time only)
-                'serial' => $this->generateUniqueSerial(),
-                'issued_at' => now(),
+                'serial'       => $this->generateUniqueSerial(),
+                'verify_token' => $this->generateUniqueToken(), // 64 chars
+                'issued_at'    => now(),
             ]
         );
 
-        // Verification URL (by serial)
-        $verifyUrl = route('certificates.verify', $certificate->serial);
+        // ✅ Backfill old records safely (serial/token may be null from earlier schema)
+        $wasUpdated = false;
+
+        if (!$certificate->serial) {
+            $certificate->serial = $this->generateUniqueSerial();
+            $wasUpdated = true;
+        }
+
+        if (!$certificate->verify_token) {
+            $certificate->verify_token = $this->generateUniqueToken();
+            $wasUpdated = true;
+        }
+
+        if ($wasUpdated) {
+            $certificate->save();
+        }
+
+        // ✅ URLs (for QR + email)
+        $verifyUrl   = route('certificates.verify', $certificate->verify_token);
+        $downloadUrl = route('certificates.download', $course->id);
+
+        /**
+         * ✅ IMPORTANT:
+         * Only do email + notification the FIRST time certificate is created
+         */
+        if ($certificate->wasRecentlyCreated) {
+
+            // ✅ 1) Send Email (queued)
+            Mail::to($user->email)->queue(
+                new CertificateIssued($user, $course, $certificate, $verifyUrl, $downloadUrl)
+            );
+
+            // ✅ 2) Create In-App Notification (saved in DB)
+            $user->notify(new CertificateReady($course->title));
+        }
 
         // QR Code (online generator)
         $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' . urlencode($verifyUrl);
-
+        
+        // PDF
         $pdf = Pdf::loadView('certificates.course', [
                 'studentName' => $user->name,
                 'courseTitle' => $course->title,
@@ -69,39 +107,31 @@ class CertificateController extends Controller
             ])
             ->setPaper('a4', 'landscape')
             ->setOptions([
-                // ✅ allows QR url image to load
                 'isRemoteEnabled' => true,
-
-                // ✅ helps with local file paths like public_path('images/...')
                 'isHtml5ParserEnabled' => true,
-
-                // ✅ improves font rendering
                 'isFontSubsettingEnabled' => true,
             ]);
 
         return $pdf->download('certificate-' . $certificate->serial . '.pdf');
+        
     }
-
-    // ✅ Public verification page (VALID + INVALID)
-    public function verify(string $serial)
+        
+    // ✅ Public verification by token
+    public function verify(string $token)
     {
-        $certificate = Certificate::where('serial', $serial)
+        $certificate = Certificate::where('verify_token', $token)
             ->with(['user', 'course', 'course.instructor'])
             ->first();
 
-        // ✅ If not found, show invalid page instead of 404
         if (!$certificate) {
             return view('certificates.invalid', [
-                'serial' => $serial,
+                'serial' => $token,
             ]);
         }
 
         return view('certificates.verify', compact('certificate'));
     }
 
-    /**
-     * Generate serial and ensure uniqueness in DB.
-     */
     private function generateUniqueSerial(): string
     {
         do {
@@ -111,5 +141,14 @@ class CertificateController extends Controller
         } while (Certificate::where('serial', $serial)->exists());
 
         return $serial;
+    }
+
+    private function generateUniqueToken(): string
+    {
+        do {
+            $token = bin2hex(random_bytes(32)); // 64 chars
+        } while (Certificate::where('verify_token', $token)->exists());
+
+        return $token;
     }
 }

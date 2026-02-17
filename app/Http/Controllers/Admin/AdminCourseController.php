@@ -1,31 +1,79 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class AdminCourseController extends Controller
+class CourseController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // ✅ Always define $q so the view never breaks
-        $q = (string) $request->query('q', '');
+        $courses = Course::with('instructor')->latest()->get();
+        return view('courses.index', compact('courses'));
+    }
 
-        $courses = Course::query()
-            ->with('instructor')
-            ->when($q !== '', function ($query) use ($q) {
-                // ✅ group OR conditions properly
-                $query->where(function ($sub) use ($q) {
-                    $sub->where('title', 'like', "%{$q}%")
-                        ->orWhere('description', 'like', "%{$q}%");
-                });
-            })
-            ->orderByDesc('id')
-            ->paginate(12)
-            ->withQueryString();
+    public function create()
+    {
+        return view('courses.create');
+    }
 
-        return view('admin.courses.index', compact('courses', 'q'));
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $data['instructor_id'] = auth()->id();
+
+        $course = Course::create($data);
+
+        return redirect()->route('courses.show', $course->id)
+            ->with('success', 'Course created successfully.');
+    }
+
+    public function show(Course $course)
+    {
+        return view('courses.show', compact('course'));
+    }
+
+    // Live session settings (meeting_url, starts_at)
+    public function editSession(Course $course)
+    {
+        return view('courses.session', compact('course'));
+    }
+
+    public function updateSession(Request $request, Course $course)
+    {
+        $data = $request->validate([
+            'meeting_url' => ['nullable', 'url'],
+            'starts_at' => ['nullable', 'date'],
+        ]);
+
+        $course->update($data);
+
+        return back()->with('success', 'Live session updated.');
+    }
+
+    // ✅ Instructor: delete ONLY their own course
+    public function destroy(Course $course)
+    {
+        $user = Auth::user();
+
+        if (!$user || $user->role !== 'instructor') {
+            abort(403);
+        }
+
+        if ($course->instructor_id !== $user->id) {
+            abort(403);
+        }
+
+        $course->delete();
+
+        return redirect()
+            ->route('courses.index')
+            ->with('success', 'Course deleted successfully.');
     }
 }

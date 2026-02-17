@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +13,7 @@ class Course extends Model
     protected $fillable = [
         'title',
         'description',
+        'thumbnail',
         'meeting_url',
         'starts_at',
         'instructor_id',

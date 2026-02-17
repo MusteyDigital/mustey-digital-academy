@@ -66,16 +66,51 @@
                                     </p>
                                 </div>
 
-                                <div class="flex items-center justify-between flex-wrap gap-2">
+                                <div class="flex flex-wrap items-center gap-2">
                                     <span class="inline-flex items-center rounded-full bg-blue-100 text-blue-800 px-3 py-1 text-xs font-semibold">
                                         Instructor View
                                     </span>
 
+                                    <span class="text-xs text-gray-500">
+                                        ID: {{ $course->id }}
+                                    </span>
+                                </div>
+
+                                {{-- ACTIONS --}}
+                                <div class="flex items-center justify-between flex-wrap gap-2 pt-2">
+
+                                    {{-- Manage (show page) --}}
                                     <a href="{{ route('courses.show', $course->id) }}"
                                        class="inline-flex items-center rounded-md bg-gray-900 text-white px-4 py-2 text-sm hover:bg-black">
                                         Manage
                                     </a>
+
+                                    <div class="flex items-center gap-2">
+
+                                        {{-- Edit --}}
+                                        <a href="{{ route('courses.edit', $course->id) }}"
+                                           class="inline-flex items-center rounded-md border px-3 py-2 text-sm hover:bg-gray-50">
+                                            ✏️ Edit
+                                        </a>
+
+                                        {{-- Delete --}}
+                                        <form method="POST" action="{{ route('courses.destroy', $course->id) }}"
+                                              onsubmit="return confirm('Delete this course? This cannot be undone.');">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit"
+                                                    class="inline-flex items-center rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 hover:bg-red-100">
+                                                🗑 Delete
+                                            </button>
+                                        </form>
+
+                                    </div>
                                 </div>
+
+                                <p class="text-xs text-gray-500 pt-1">
+                                    Tip: Only the course owner (you) or an admin can delete.
+                                </p>
 
                             </div>
                         @endforeach

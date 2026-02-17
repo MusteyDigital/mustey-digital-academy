@@ -53,28 +53,46 @@
                 @else
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
                         @foreach($courses as $course)
-                            <div class="border rounded-lg p-5 hover:shadow-md transition bg-white space-y-3">
-                                <div>
-                                    <a class="text-lg font-semibold text-gray-900 underline"
-                                       href="{{ route('courses.show', $course->id) }}">
-                                        {{ $course->title }}
-                                    </a>
+                            <div class="border rounded-lg overflow-hidden hover:shadow-md transition bg-white">
 
-                                    <p class="text-sm text-gray-600 mt-1 line-clamp-2">
-                                        {{ $course->description ?? 'No description available.' }}
-                                    </p>
+                                {{-- ✅ Thumbnail --}}
+                                @if(!empty($course->thumbnail))
+                                    <div class="w-full">
+                                        <img
+                                            src="{{ asset('storage/'.$course->thumbnail) }}"
+                                            alt="{{ $course->title }} thumbnail"
+                                            class="w-full max-h-64 object-cover rounded-t-lg"
+                                            style="height: 180px;"
+                                            loading="lazy"
+                                        >
+
+                                    </div>
+                                @endif
+
+                                <div class="p-5 space-y-3">
+                                    <div>
+                                        <a class="text-lg font-semibold text-gray-900 underline"
+                                           href="{{ route('courses.show', $course->id) }}">
+                                            {{ $course->title }}
+                                        </a>
+
+                                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">
+                                            {{ $course->description ?? 'No description available.' }}
+                                        </p>
+                                    </div>
+
+                                    <div class="flex items-center justify-between flex-wrap gap-2">
+                                        <span class="inline-flex items-center rounded-full bg-gray-100 text-gray-800 px-3 py-1 text-xs font-semibold">
+                                            Status: {{ $course->pivot->status ?? 'enrolled' }}
+                                        </span>
+
+                                        <a href="{{ route('courses.show', $course->id) }}"
+                                           class="inline-flex items-center rounded-md bg-gray-900 text-white px-4 py-2 text-sm hover:bg-black">
+                                            Open
+                                        </a>
+                                    </div>
                                 </div>
 
-                                <div class="flex items-center justify-between flex-wrap gap-2">
-                                    <span class="inline-flex items-center rounded-full bg-gray-100 text-gray-800 px-3 py-1 text-xs font-semibold">
-                                        Status: {{ $course->pivot->status }}
-                                    </span>
-
-                                    <a href="{{ route('courses.show', $course->id) }}"
-                                       class="inline-flex items-center rounded-md bg-gray-900 text-white px-4 py-2 text-sm hover:bg-black">
-                                        Open
-                                    </a>
-                                </div>
                             </div>
                         @endforeach
                     </div>

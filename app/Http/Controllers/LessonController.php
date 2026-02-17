@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CourseCompleted;
+use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Enrollment;
 use App\Models\LessonCompletion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class LessonController extends Controller
 {
@@ -123,6 +127,7 @@ class LessonController extends Controller
             abort(403);
         }
 
+        // 1) Mark lesson completed (idempotent)
         LessonCompletion::updateOrCreate(
             [
                 'user_id' => $user->id,
@@ -133,6 +138,40 @@ class LessonController extends Controller
             ]
         );
 
-        return redirect()->route('lessons.show', [$course->id, $lesson->id]);
+        // 2) Check course completion
+        $totalLessons = $course->lessons()->count();
+
+        if ($totalLessons > 0) {
+            $lessonIds = $course->lessons()->pluck('id');
+
+            $completedCount = LessonCompletion::where('user_id', $user->id)
+                ->whereIn('lesson_id', $lessonIds)
+                ->count();
+
+            // 3) If completed all lessons -> create certificate once + queue email once
+            if ($completedCount >= $totalLessons) {
+
+                $certificate = Certificate::firstOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'course_id' => $course->id,
+                    ],
+                    [
+                        'serial_code' => 'NEX-' . strtoupper(Str::random(10)),
+                        'verify_token' => Str::random(60),
+                        'issued_at' => now(),
+                    ]
+                );
+
+                // Send only once
+                if ($certificate->wasRecentlyCreated) {
+                    Mail::to($user->email)->queue(new CourseCompleted($user, $course, $certificate));
+                }
+            }
+        }
+
+        return redirect()
+            ->route('lessons.show', [$course->id, $lesson->id])
+            ->with('success', 'Lesson marked completed!');
     }
 }
