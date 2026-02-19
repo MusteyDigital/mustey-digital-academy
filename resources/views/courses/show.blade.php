@@ -236,9 +236,9 @@
                         @endif
                     @endauth
                 </div>
-                  @php
+                   @php
                     $totalLessons = $course->lessons->count();
-                    $completedCount = $course->lessons->whereIn('id', $completedLessonIds)->count();
+                    $completedCount = isset($completedLessonIds) ? count($completedLessonIds);
                     $percent = $totalLessons > 0 ? round(($completedCount / $totalLessons) * 100) : 0;
                 @endphp
 
