@@ -52,6 +52,19 @@
                         >{{ old('description') }}</textarea>
                     </div>
 
+                    <div>
+                        <label class="text-sm text-gray-600">Course Price (₦)</label>
+                        <input
+                            type="number"
+                            name="price"
+                            min="0"
+                            value="{{ old('price', 0) }}"
+                            class="w-full border rounded p-2"
+                            placeholder="e.g. 5000"
+                        >
+                        <p class="text-xs text-gray-500 mt-1">Enter 0 for a free course.</p>
+                    </div>
+
                     {{-- Thumbnail --}}
                     <div class="space-y-2">
                         <label class="text-sm text-gray-600">Thumbnail (optional)</label>

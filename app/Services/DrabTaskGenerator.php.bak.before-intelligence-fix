@@ -1,0 +1,246 @@
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class DrabTaskGenerator
+{
+    public function generate(string $difficulty = 'easy'): array
+    {
+        $apiKey = config('services.gemini.api_key');
+        $model = config('services.gemini.model', 'gemini-2.5-flash');
+        $endpoint = rtrim(config('services.gemini.endpoint', 'https://generativelanguage.googleapis.com/v1beta/models'), '/');
+
+        if (!$apiKey) {
+            throw new \RuntimeException('GEMINI_API_KEY is not configured.');
+        }
+
+        $prompt = $this->buildPrompt($difficulty);
+        $url = "{$endpoint}/{$model}:generateContent?key={$apiKey}";
+
+        $response = Http::timeout(30)
+            ->acceptJson()
+            ->post($url, [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt],
+                        ],
+                    ],
+                ],
+                'generationConfig' => [
+                    'response_mime_type' => 'application/json',
+                    'temperature' => 0.5,
+                ],
+            ]);
+
+        if (!$response->successful()) {
+            Log::warning('Gemini DRAB structured generation failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+            throw new \RuntimeException('Gemini request failed.');
+        }
+
+        $data = $response->json();
+        $text = data_get($data, 'candidates.0.content.parts.0.text');
+
+        if (!$text) {
+            Log::warning('Gemini DRAB generation returned empty text', ['response' => $data]);
+            throw new \RuntimeException('Gemini returned no task text.');
+        }
+
+        $task = json_decode($text, true);
+
+        if (!is_array($task)) {
+            Log::warning('Gemini DRAB generation returned invalid JSON', ['text' => $text]);
+            throw new \RuntimeException('Gemini returned invalid JSON.');
+        }
+
+        $this->validateTask($task, $difficulty);
+
+        return [
+            'input' => (int) $task['input'],
+            'rule_type' => (string) $task['rule_type'],
+            'params' => $task['params'],
+            'rule' => (string) $task['rule_text'],
+        ];
+    }
+
+    private function buildPrompt(string $difficulty): string
+    {
+        $rules = <<<TEXT
+You are generating ONE structured numeric reasoning task for a student.
+
+Return ONLY valid JSON. No markdown. No commentary.
+
+Allowed rule types:
+
+1. parity_transform
+Schema:
+{
+  "input": 8,
+  "rule_type": "parity_transform",
+  "params": {
+    "even_operation": "multiply",
+    "even_value": 2,
+    "odd_operation": "add",
+    "odd_value": 3
+  },
+  "rule_text": "If the number is even, multiply by 2. If the number is odd, add 3."
+}
+
+Allowed operations for parity_transform:
+- even_operation: "add" | "subtract" | "multiply"
+- odd_operation: "add" | "subtract" | "multiply"
+- values must be integers from 1 to 5
+
+2. threshold_transform
+Schema:
+{
+  "input": 11,
+  "rule_type": "threshold_transform",
+  "params": {
+    "threshold": 10,
+    "greater_operation": "multiply",
+    "greater_value": 2,
+    "otherwise_operation": "add",
+    "otherwise_value": 5
+  },
+  "rule_text": "If the number is greater than 10, multiply by 2. Otherwise, add 5."
+}
+
+Allowed operations for threshold_transform:
+- greater_operation: "add" | "subtract" | "multiply"
+- otherwise_operation: "add" | "subtract" | "multiply"
+- threshold must be integer from 5 to 15
+- values must be integers from 1 to 5
+
+3. two_step_parity
+Schema:
+{
+  "input": 8,
+  "rule_type": "two_step_parity",
+  "params": {
+    "even_step_1_operation": "multiply",
+    "even_step_1_value": 2,
+    "even_step_2_operation": "subtract",
+    "even_step_2_value": 1,
+    "odd_step_1_operation": "add",
+    "odd_step_1_value": 3,
+    "odd_step_2_operation": "multiply",
+    "odd_step_2_value": 2
+  },
+  "rule_text": "If the number is even, multiply by 2 and then subtract 1. If the number is odd, add 3 and then multiply by 2."
+}
+
+Allowed operations for two_step_parity:
+- each operation must be "add" | "subtract" | "multiply"
+- each value must be an integer from 1 to 5
+
+General rules:
+- input must be an integer from 2 to 20
+- keep the task learner-friendly
+- make the rule_text exactly match the structured params
+- do not include answer
+- do not include explanation
+TEXT;
+
+        $difficultyGuide = match ($difficulty) {
+            'easy' => 'Use rule_type "parity_transform". Keep it one-step and simple.',
+            'medium' => 'Use rule_type "threshold_transform". Keep it one-step but slightly harder.',
+            'hard' => 'Use rule_type "two_step_parity". Make it exactly two steps.',
+            default => 'Use rule_type "parity_transform".',
+        };
+
+        return $rules . "\n\nDifficulty: {$difficulty}\n{$difficultyGuide}";
+    }
+
+    private function validateTask(array $task, string $difficulty): void
+    {
+        foreach (['input', 'rule_type', 'params', 'rule_text'] as $key) {
+            if (!array_key_exists($key, $task)) {
+                throw new \RuntimeException("Gemini task missing key: {$key}");
+            }
+        }
+
+        if (!is_numeric($task['input'])) {
+            throw new \RuntimeException('Gemini task input must be numeric.');
+        }
+
+        if (!is_string($task['rule_type']) || trim($task['rule_type']) === '') {
+            throw new \RuntimeException('Gemini task rule_type must be a non-empty string.');
+        }
+
+        if (!is_array($task['params']) || empty($task['params'])) {
+            throw new \RuntimeException('Gemini task params must be a non-empty array.');
+        }
+
+        if (!is_string($task['rule_text']) || trim($task['rule_text']) === '') {
+            throw new \RuntimeException('Gemini task rule_text must be a non-empty string.');
+        }
+
+        $expectedRuleType = match ($difficulty) {
+            'easy' => 'parity_transform',
+            'medium' => 'threshold_transform',
+            'hard' => 'two_step_parity',
+            default => null,
+        };
+
+        if ($expectedRuleType && $task['rule_type'] !== $expectedRuleType) {
+            throw new \RuntimeException("Gemini task rule_type does not match difficulty {$difficulty}.");
+        }
+    }
+
+
+    private function generateSequencePattern(): array
+    {
+        $start = rand(1, 10);
+        $step = rand(2, 5);
+
+        $sequence = [];
+        for ($i = 0; $i < 4; $i++) {
+            $sequence[] = $start + ($i * $step);
+        }
+
+        return [
+            'input' => implode(', ', $sequence) . ', ?',
+            'rule_type' => 'sequence_pattern',
+            'params' => [
+                'start' => $start,
+                'step' => $step,
+            ],
+            'rule_text' => 'Find the pattern in the sequence and determine the next number.',
+        ];
+    }
+
+    private function generateRuleDiscovery(): array
+    {
+        $multiplier = rand(2, 3);
+        $add = rand(1, 5);
+
+        $input = rand(2, 6);
+
+        $examples = [
+            [$input, $input * $multiplier + $add],
+            [$input + 2, ($input + 2) * $multiplier + $add],
+        ];
+
+        $question = $input + 4;
+
+        return [
+            'input' => "{$examples[0][0]} → {$examples[0][1]}, {$examples[1][0]} → {$examples[1][1]}, {$question} → ?",
+            'rule_type' => 'rule_discovery',
+            'params' => [
+                'multiplier' => $multiplier,
+                'add' => $add,
+                'question' => $question,
+            ],
+            'rule_text' => 'Identify the rule from the examples and apply it.',
+        ];
+    }
+
+}

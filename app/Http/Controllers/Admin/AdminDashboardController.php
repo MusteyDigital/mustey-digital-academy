@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\User;
 use App\Models\Certificate;
+use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -25,6 +26,33 @@ class AdminDashboardController extends Controller
         $totalEnrollments = DB::table('enrollments')->count();
 
         $totalCertificates = Certificate::count();
+
+        $successfulPaymentsCount = Payment::where('status', 'success')->count();
+        $totalRevenue = Payment::where('status', 'success')->sum('amount');
+        $todayRevenue = Payment::where('status', 'success')
+            ->whereDate('created_at', Carbon::today())
+            ->sum('amount');
+        $monthRevenue = Payment::where('status', 'success')
+            ->whereYear('created_at', Carbon::today()->year)
+            ->whereMonth('created_at', Carbon::today()->month)
+            ->sum('amount');
+
+        $revenueByCourse = Payment::select('course_id', DB::raw('SUM(amount) as total_revenue'))
+            ->where('status', 'success')
+            ->groupBy('course_id')
+            ->orderByDesc('total_revenue')
+            ->limit(5)
+            ->get();
+
+        $topRevenueCourses = Course::whereIn('id', $revenueByCourse->pluck('course_id'))
+            ->get()
+            ->keyBy('id');
+
+        $recentPayments = Payment::with(['user', 'course'])
+            ->where('status', 'success')
+            ->latest()
+            ->take(5)
+            ->get();
 
         $recentUsers        = User::latest()->take(5)->get();
         $recentCourses      = Course::with('instructor')->latest()->take(5)->get();
@@ -109,6 +137,13 @@ $topCourses = Course::whereIn('id', $enrollmentsByCourse->pluck('course_id'))
             'totalCourses',
             'totalEnrollments',
             'totalCertificates',
+            'successfulPaymentsCount',
+            'totalRevenue',
+            'todayRevenue',
+            'monthRevenue',
+            'revenueByCourse',
+            'topRevenueCourses',
+            'recentPayments',
             'recentUsers',
             'recentCourses',
             'recentCertificates',

@@ -63,6 +63,26 @@
             </a>
         </div>
 
+        <div class="bg-white shadow-sm sm:rounded-lg p-5 border">
+            <p class="text-xs uppercase tracking-widest text-gray-500">Successful Payments</p>
+            <p class="text-3xl font-bold mt-2">{{ $successfulPaymentsCount }}</p>
+        </div>
+
+        <div class="bg-white shadow-sm sm:rounded-lg p-5 border">
+            <p class="text-xs uppercase tracking-widest text-gray-500">Total Revenue</p>
+            <p class="text-3xl font-bold mt-2">₦{{ number_format($totalRevenue) }}</p>
+        </div>
+
+        <div class="bg-white shadow-sm sm:rounded-lg p-5 border">
+            <p class="text-xs uppercase tracking-widest text-gray-500">Today Revenue</p>
+            <p class="text-3xl font-bold mt-2">₦{{ number_format($todayRevenue) }}</p>
+        </div>
+
+        <div class="bg-white shadow-sm sm:rounded-lg p-5 border">
+            <p class="text-xs uppercase tracking-widest text-gray-500">This Month Revenue</p>
+            <p class="text-3xl font-bold mt-2">₦{{ number_format($monthRevenue) }}</p>
+        </div>
+
     </div>
 
     {{-- Quick Links --}}
@@ -86,6 +106,16 @@
             </a>
 
             <a class="inline-flex items-center rounded-md border px-4 py-2 text-sm hover:bg-gray-50"
+               href="{{ route('admin.payments.index') }}">
+                💳 Payments
+            </a>
+
+            <a class="inline-flex items-center rounded-md border px-4 py-2 text-sm hover:bg-gray-50"
+               href="{{ route('admin.coupons.index') }}">
+                🎟 Coupons
+            </a>
+
+            <a class="inline-flex items-center rounded-md border px-4 py-2 text-sm hover:bg-gray-50"
                href="{{ route('admin.attendance.lessons') }}">
                 ✅ Lesson Attendance
             </a>
@@ -99,6 +129,61 @@
                href="{{ route('admin.certificates.index') }}">
                 🏅 Certificates
             </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-white shadow-sm sm:rounded-lg p-6 border">
+            <h3 class="font-semibold text-gray-800 text-lg">Top Courses by Revenue</h3>
+
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="text-left p-3">Course</th>
+                            <th class="text-left p-3">Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($revenueByCourse as $row)
+                            <tr class="border-b">
+                                <td class="p-3">
+                                    {{ $topRevenueCourses[$row->course_id]->title ?? '—' }}
+                                </td>
+                                <td class="p-3 font-semibold">
+                                    ₦{{ number_format($row->total_revenue) }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="2" class="p-4 text-gray-600">No revenue yet.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-white shadow-sm sm:rounded-lg p-6 border">
+            <div class="flex justify-between mb-3">
+                <h3 class="font-semibold text-gray-800 text-lg">Recent Payments</h3>
+            </div>
+
+            @forelse($recentPayments as $payment)
+                <div class="border-b last:border-b-0 py-3 text-sm">
+                    <div class="font-semibold text-gray-800">
+                        {{ $payment->user->name ?? 'Student' }}
+                    </div>
+                    <div class="text-gray-600">
+                        {{ $payment->course->title ?? 'Course' }}
+                    </div>
+                    <div class="text-gray-500">
+                        ₦{{ number_format($payment->amount) }} • {{ strtoupper($payment->status) }}
+                    </div>
+                </div>
+            @empty
+                <p class="text-sm text-gray-600">No recent payments yet.</p>
+            @endforelse
         </div>
     </div>
 

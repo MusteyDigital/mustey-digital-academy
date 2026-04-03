@@ -1,35 +1,23 @@
-# OS / editor
-*.swp
-*.swo
-.DS_Store
-
-# Node
+vendor/
 node_modules/
-
-# Laravel
-/vendor/
 .env
-/storage/*.key
-/storage/logs/
-bootstrap/cache/
-
-# Accidental files from copy/paste
-present
-@php
-email
-enrolled
-serial
-student
-id
-id))
-format('M
-get()
-group(function
-links()
-name
-name('*
-route('*
-assertDatabaseCount('*
-assertDatabaseHas('*
-compose.yaml.save
-/public/storage
+.env.*
+storage/*.key
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+public/build/
+bootstrap/cache/*.php
+*.sql
+*.tar.gz
+*.dump
+*.zip
+*.save
+*.swp
+*.bak
+*.backup
+*phpy
+clean-project/
+backup.sh
+backup.shy

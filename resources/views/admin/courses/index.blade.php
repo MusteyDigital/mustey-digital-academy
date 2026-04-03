@@ -28,7 +28,7 @@
                         <label class="text-sm text-gray-600">Search</label>
                         <input
                             name="q"
-                            value="{{ $q }}"
+                            value="{{ old('q', request('q', '')) }}"
                             class="w-full border rounded p-2"
                             placeholder="Search title or description"
                         >
@@ -38,15 +38,20 @@
                         Filter
                     </button>
 
-                    <a href="{{ route('admin.courses.index') }}" class="rounded border px-4 py-2 text-sm hover:bg-gray-50">
+                    <a href="{{ route('admin.courses.index') }}"
+                       class="rounded border px-4 py-2 text-sm hover:bg-gray-50">
                         Reset
                     </a>
                 </form>
 
-                @if($q !== '')
+                @if(request('q', '') !== '')
                     <p class="text-sm text-gray-600 mt-3">
-                        Showing results for: <span class="font-semibold">{{ $q }}</span>
-                        • Found: <span class="font-semibold">{{ $courses->total() }}</span>
+                        Showing results for:
+                        <span class="font-semibold">{{ request('q') }}</span>
+                        • Found:
+                        <span class="font-semibold">
+                            {{ method_exists($courses, 'total') ? $courses->total() : $courses->count() }}
+                        </span>
                     </p>
                 @endif
             </div>
@@ -77,21 +82,24 @@
 
                         <div class="flex items-center justify-between pt-2">
                             <span class="text-xs text-gray-500">
-                                Created: {{ optional($course->created_at)->format('M j, Y') ?? '—' }}
+                                Created:
+                                {{ optional($course->created_at)->format('M j, Y') ?? '—' }}
                             </span>
 
-                            <a class="underline text-blue-600 text-sm" href="{{ route('courses.show', $course->id) }}">
+                            <a class="underline text-blue-600 text-sm"
+                               href="{{ route('courses.show', $course->id) }}">
                                 Open Course →
                             </a>
                         </div>
 
-                        {{-- ✅ Admin actions --}}
+                        {{-- Admin actions --}}
                         <div class="pt-3 border-t flex items-center justify-between gap-2">
                             <span class="text-xs text-gray-500">
                                 Manage:
                             </span>
 
-                            <form method="POST" action="{{ route('admin.courses.destroy', $course->id) }}"
+                            <form method="POST"
+                                  action="{{ route('admin.courses.destroy', $course->id) }}"
                                   onsubmit="return confirm('Delete this course? This cannot be undone.');">
                                 @csrf
                                 @method('DELETE')
@@ -111,9 +119,11 @@
             </div>
 
             {{-- Pagination --}}
-            <div class="bg-white border rounded-lg p-4">
-                {{ $courses->links() }}
-            </div>
+            @if(method_exists($courses, 'links'))
+                <div class="bg-white border rounded-lg p-4">
+                    {{ $courses->links() }}
+                </div>
+            @endif
 
         </div>
     </div>

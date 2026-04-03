@@ -1,0 +1,85 @@
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Payment Receipt
+            </h2>
+
+            <a href="{{ url()->previous() }}" class="underline text-gray-600">
+                ← Back
+            </a>
+        </div>
+    </x-slot>
+
+    <div class="py-8">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow-sm sm:rounded-lg border p-6 space-y-6">
+                <div class="text-center border-b pb-4">
+                    <h3 class="text-2xl font-bold text-gray-900">Mustey Digital Academy</h3>
+                    <p class="text-sm text-gray-500 mt-1">Payment Receipt</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <div class="text-gray-500">Student</div>
+                        <div class="font-semibold text-gray-900">{{ $payment->user->name ?? '—' }}</div>
+                        <div class="text-gray-600">{{ $payment->user->email ?? '—' }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Course</div>
+                        <div class="font-semibold text-gray-900">{{ $payment->course->title ?? '—' }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Reference</div>
+                        <div class="font-semibold text-gray-900 break-all">{{ $payment->reference }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Gateway</div>
+                        <div class="font-semibold text-gray-900 uppercase">{{ $payment->gateway }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Amount</div>
+                        <div class="font-semibold text-gray-900">₦{{ number_format($payment->amount) }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Status</div>
+                        <div class="font-semibold text-green-700 uppercase">{{ $payment->status }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Paid At</div>
+                        <div class="font-semibold text-gray-900">
+                            {{ $payment->paid_at ? $payment->paid_at->format('M j, Y g:i A') : ($payment->created_at?->format('M j, Y g:i A') ?? '—') }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Currency</div>
+                        <div class="font-semibold text-gray-900 uppercase">{{ $payment->currency }}</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <button onclick="window.print()" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Print Receipt
+                    </button>
+
+                    <a href="{{ route('payments.receipt.pdf', $payment->id) }}"
+                       class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Download PDF
+                    </a>
+
+                    <a href="{{ route('courses.show', $payment->course_id) }}"
+                       class="inline-flex items-center px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50">
+                        Go to Course
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

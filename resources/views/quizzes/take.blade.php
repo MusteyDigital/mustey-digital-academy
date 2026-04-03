@@ -22,6 +22,16 @@
                         <p class="text-sm mt-1">Please check back later.</p>
                     </div>
                 @else
+
+                    {{-- Start Attempt Button --}}
+                    <form method="POST" action="{{ route('quizzes.start', [$course->id, $quiz->id]) }}">
+                        @csrf
+                        <x-primary-button type="submit">Start Quiz</x-primary-button>
+                    </form>
+
+                    <hr>
+
+                    {{-- Quiz Questions --}}
                     <form method="POST" action="{{ route('quizzes.submit', [$course->id, $quiz->id]) }}" class="space-y-6">
                         @csrf
 
@@ -49,6 +59,7 @@
                             <x-primary-button>Submit Quiz</x-primary-button>
                         </div>
                     </form>
+
                 @endif
 
             </div>

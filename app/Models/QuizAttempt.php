@@ -2,17 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class QuizAttempt extends Model
 {
-    use HasFactory;
-
-    protected $fillable = ['quiz_id','user_id','score','total','taken_at'];
+    protected $fillable = [
+        'quiz_id',
+        'user_id',
+        'status',
+        'score',
+        'total',
+        'started_at',
+        'submitted_at',
+        'percentage',
+    ];
 
     protected $casts = [
-        'taken_at' => 'datetime',
+        'started_at' => 'datetime',
+        'submitted_at' => 'datetime',
     ];
 
     public function quiz()
@@ -23,5 +30,10 @@ class QuizAttempt extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function answers()
+    {
+        return $this->hasMany(QuizAttemptAnswer::class, 'attempt_id');
     }
 }

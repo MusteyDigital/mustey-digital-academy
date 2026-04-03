@@ -6,54 +6,51 @@ use App\Models\Course;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class QuizQuestionController extends Controller
 {
-    private function ensureCanManageQuiz(Course $course, Quiz $quiz): void
+    protected function ensureCanManageQuiz(Course $course, Quiz $quiz): void
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
-        if (!in_array($user->role, ['instructor', 'admin'])) {
+        if (!$user || !in_array($user->role, ['instructor', 'admin'])) {
             abort(403);
         }
 
-        // If instructor, must own the course
         if ($user->role === 'instructor' && $course->instructor_id !== $user->id) {
             abort(403);
         }
 
-        // Quiz must belong to course
         if ($quiz->course_id !== $course->id) {
             abort(404);
         }
     }
 
-    // Instructor/Admin: add question form
+    protected function ensureQuestionBelongsToQuiz(Quiz $quiz, QuizQuestion $question): void
+    {
+        if ($question->quiz_id !== $quiz->id) {
+            abort(404);
+        }
+    }
+
     public function create(Course $course, Quiz $quiz)
     {
         $this->ensureCanManageQuiz($course, $quiz);
 
-        // IMPORTANT: match your blade path
-        // If your file is resources/views/quizzes/questions/create.blade.php:
         return view('quizzes.questions.create', compact('course', 'quiz'));
-
-        // If your file is resources/views/quiz-questions/create.blade.php instead, use:
-        // return view('quiz-questions.create', compact('course', 'quiz'));
     }
 
-    // Instructor/Admin: store question
     public function store(Request $request, Course $course, Quiz $quiz)
     {
         $this->ensureCanManageQuiz($course, $quiz);
 
         $validated = $request->validate([
-            'question' => 'required|string',
-            'option_a' => 'required|string|max:255',
-            'option_b' => 'required|string|max:255',
-            'option_c' => 'required|string|max:255',
-            'option_d' => 'required|string|max:255',
-            'correct_option' => 'required|in:a,b,c,d',
+            'question' => ['required', 'string'],
+            'option_a' => ['required', 'string'],
+            'option_b' => ['required', 'string'],
+            'option_c' => ['required', 'string'],
+            'option_d' => ['required', 'string'],
+            'correct_option' => ['required', 'in:a,b,c,d'],
         ]);
 
         QuizQuestion::create([
@@ -69,5 +66,46 @@ class QuizQuestionController extends Controller
         return redirect()
             ->route('quizzes.show', [$course->id, $quiz->id])
             ->with('success', 'Question added successfully.');
+    }
+
+    public function edit(Course $course, Quiz $quiz, QuizQuestion $question)
+    {
+        $this->ensureCanManageQuiz($course, $quiz);
+        $this->ensureQuestionBelongsToQuiz($quiz, $question);
+
+        return view('quizzes.questions.edit', compact('course', 'quiz', 'question'));
+    }
+
+    public function update(Request $request, Course $course, Quiz $quiz, QuizQuestion $question)
+    {
+        $this->ensureCanManageQuiz($course, $quiz);
+        $this->ensureQuestionBelongsToQuiz($quiz, $question);
+
+        $validated = $request->validate([
+            'question' => ['required', 'string'],
+            'option_a' => ['required', 'string'],
+            'option_b' => ['required', 'string'],
+            'option_c' => ['required', 'string'],
+            'option_d' => ['required', 'string'],
+            'correct_option' => ['required', 'in:a,b,c,d'],
+        ]);
+
+        $question->update($validated);
+
+        return redirect()
+            ->route('quizzes.show', [$course->id, $quiz->id])
+            ->with('success', 'Question updated successfully.');
+    }
+
+    public function destroy(Course $course, Quiz $quiz, QuizQuestion $question)
+    {
+        $this->ensureCanManageQuiz($course, $quiz);
+        $this->ensureQuestionBelongsToQuiz($quiz, $question);
+
+        $question->delete();
+
+        return redirect()
+            ->route('quizzes.show', [$course->id, $quiz->id])
+            ->with('success', 'Question deleted successfully.');
     }
 }

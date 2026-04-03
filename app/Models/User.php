@@ -79,7 +79,23 @@ public function completedLessons()
         ->withPivot('completed_at')
         ->withTimestamps();
 }
-
+public function lessonCompletions()
+{
+    return $this->hasMany(\App\Models\LessonCompletion::class);
 }
 
+public function drabAttempts()
+{
+    return $this->hasMany(\App\Models\DrabAttempt::class);
+}
 
+public function lessonDiscussionMessages()
+{
+    return $this->hasMany(\App\Models\LessonDiscussionMessage::class);
+}
+
+public function courseChatMessages()
+{
+    return $this->hasMany(\App\Models\CourseChatMessage::class);
+}
+}
