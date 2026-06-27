@@ -9,7 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('lessons', function (Blueprint $table) {
-            $table->boolean('enable_drab')->default(false)->after('is_preview');
+            if (!Schema::hasColumn('lessons', 'enable_drab')) {
+                $table->boolean('enable_drab')->default(false);
+            }
         });
     }
 
