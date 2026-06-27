@@ -1,19 +1,22 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        // Increase verify_token length to 64
-        DB::statement('ALTER TABLE certificates ALTER COLUMN verify_token TYPE VARCHAR(64)');
+        Schema::table('certificates', function (Blueprint $table) {
+            $table->string('verify_token', 64)->change();
+        });
     }
 
     public function down(): void
     {
-        // Revert back to 60 if ever needed
-        DB::statement('ALTER TABLE certificates ALTER COLUMN verify_token TYPE VARCHAR(60)');
+        Schema::table('certificates', function (Blueprint $table) {
+            $table->string('verify_token', 60)->change();
+        });
     }
 };
