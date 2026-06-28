@@ -15,7 +15,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3">
             <div>
                 <h1 class="text-xl font-bold">Admin Panel</h1>
-                <p class="text-xs text-gray-500">Nexdus Academy × Mustey Digital Academy</p>
+                <p class="text-xs text-gray-500">Mustey Digital Academy</p>
             </div>
 
             <div class="flex items-center gap-3">
