@@ -10,7 +10,7 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::with('instructor')->latest()->get();
+        $courses = Course::with('instructor')->withCount('lessons')->latest()->get();
 
         return response()->json($courses);
     }
