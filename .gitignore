@@ -21,3 +21,4 @@ bootstrap/cache/*.php
 clean-project/
 backup.sh
 backup.shy
+cookies.txt
