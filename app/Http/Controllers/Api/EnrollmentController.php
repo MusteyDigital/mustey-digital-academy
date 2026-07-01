@@ -40,7 +40,7 @@ class EnrollmentController extends Controller
     public function index(Request $request)
     {
         $enrollments = Enrollment::where('user_id', $request->user()->id)
-            ->with('course')
+            ->with(['course', 'course.modules' => function($q) { $q->orderBy('order'); }, 'course.modules.lessons' => function($q) { $q->orderBy('order'); }])
             ->get();
 
         return response()->json($enrollments);
