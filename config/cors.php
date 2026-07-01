@@ -22,6 +22,7 @@ return [
     'allowed_origins' => [
         'http://localhost:3000',
         'https://app.musteydigitalacademy.online',
+        'https://mustey-digital-academy-frontend.vercel.app',
     ],
 
     'allowed_origins_patterns' => [],
