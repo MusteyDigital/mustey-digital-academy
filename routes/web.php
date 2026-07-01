@@ -45,6 +45,15 @@ use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Admin\AdminCertificateController;
 
+Route::get('/auth/token-login', function (\Illuminate\Http\Request $request) {
+    $token = $request->query('token');
+    $redirect = $request->query('redirect', '/');
+    $tokenModel = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+    $user = $tokenModel->tokenable;
+    Auth::login($user);
+    return redirect($redirect);
+})->name('auth.token-login');
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
