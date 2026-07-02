@@ -103,7 +103,7 @@ class CertificateController extends Controller
                 'serial'      => $certificate->serial,
                 'verifyUrl'   => $verifyUrl,
                 'qrUrl'       => $qrUrl,
-                'academyLine' => 'Academy in collaboration: Nexdus Academy & Mustey Digital Academy',
+                'academyLine' => 'Mustey Digital Academy',
             ])
             ->setPaper('a4', 'landscape')
             ->setOptions([
@@ -137,7 +137,7 @@ class CertificateController extends Controller
         do {
             $year = now()->format('Y');
             $rand = str_pad((string) random_int(1, 999999), 6, '0', STR_PAD_LEFT);
-            $serial = "NX-MD-{$year}-{$rand}";
+            $serial = "MDA-{$year}-{$rand}";
         } while (Certificate::where('serial', $serial)->exists());
 
         return $serial;

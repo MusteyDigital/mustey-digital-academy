@@ -95,43 +95,48 @@ body {
 .title {
     font-size: 40px;
     font-weight: 800;
-    margin: 14px 0 6px;
+    margin: 20px 0 10px;
     color: {{ $logoColor }};
 }
 
 .name {
     font-size: 36px;
     font-weight: 800;
-    margin: 12px 0;
+    margin: 12px 0 18px;
     color: {{ $logoColor }};
 }
 
 .course {
     font-size: 18px;
-    margin: 10px 0;
-    line-height: 1.5;
+    margin: 16px auto;
+    line-height: 1.6;
+    max-width: 480px;
+    padding: 12px 0;
+    border-top: 1px solid {{ $logoColor }};
+    border-bottom: 1px solid {{ $logoColor }};
 }
 
 .meta {
-    margin-top: 10px;
+    margin-top: 16px;
     font-size: 13px;
 }
 
 .academy {
-    margin-top: 6px;
+    margin-top: 10px;
     font-size: 12px;
     font-weight: 600;
 }
 
 .serial {
-    margin-top: 8px;
+    margin-top: 14px;
     font-size: 12px;
+    letter-spacing: 0.5px;
 }
 
 /* ===== BOTTOM SECTION ===== */
 .bottom-table {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 26px;
     border-collapse: collapse;
     table-layout: fixed;
 }
@@ -147,11 +152,14 @@ body {
     margin: 0 auto;
 }
 
+.sig-space {
+    height: 26px;
+}
+
 .sig-line {
     border-top: 1px solid #111;
     padding-top: 6px;
     font-size: 11px;
-    margin-top: 22px;
 }
 
 .qr img {
@@ -223,6 +231,7 @@ has successfully completed the course <br>
 
 <td style="text-align:left;">
 <div class="sig-wrap">
+<div class="sig-space"></div>
 <div class="sig-line">
 Instructor: {{ $instructor ?? '—' }}
 </div>
@@ -240,6 +249,7 @@ Verify: {{ $verifyUrl }}
 
 <td style="text-align:right;">
 <div class="sig-wrap">
+<div class="sig-space"></div>
 <div class="sig-line">
 Nexdus Academy
 </div>
