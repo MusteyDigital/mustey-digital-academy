@@ -26,6 +26,7 @@ use App\Http\Controllers\LessonAssignmentController;
 use App\Http\Controllers\AssignmentSubmissionController;
 use App\Http\Controllers\LessonDiscussionController;
 use App\Http\Controllers\CourseChatController;
+use App\Http\Controllers\ContactController;
 
 // Instructor Controllers
 use App\Http\Controllers\Instructor\CourseManageController;
@@ -55,6 +56,9 @@ Route::get('/auth/token-login', function (\Illuminate\Http\Request $request) {
 })->name('auth.token-login');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/dashboard', function () {
     $user = Auth::user();

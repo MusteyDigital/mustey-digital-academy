@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Mail\ContactMessageMail;
+use App\Models\ContactMessage;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
+
+class ContactController extends Controller
+{
+    public function index(): View
+    {
+        return view('contact');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'subject' => ['nullable', 'string', 'max:255'],
+            'message' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $contactMessage = ContactMessage::create($validated);
+
+        $to = config('mail.admin_address', config('mail.from.address'));
+
+        try {
+            Mail::to($to)->send(new ContactMessageMail($contactMessage));
+        } catch (\Throwable $e) {
+            Log::warning('Contact message email failed to send: ' . $e->getMessage());
+        }
+
+        return redirect()
+            ->route('contact')
+            ->with('status', "Thanks {$contactMessage->name}, your message has been received. We'll get back to you soon.");
+    }
+}
