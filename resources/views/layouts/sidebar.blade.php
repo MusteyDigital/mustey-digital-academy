@@ -68,6 +68,12 @@
             @endif
         </a>
 
+        <a href="{{ route('courses.index') }}"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ request()->routeIs('courses.index') ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-400 hover:bg-white/10 hover:text-white' }}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+            Browse Courses
+        </a>
+
         {{-- Student links --}}
         @if($role === 'student')
             <div class="pt-3 pb-1 px-3 text-[10px] font-semibold uppercase tracking-widest text-slate-500">Learning</div>
