@@ -1,13 +1,9 @@
 @component('mail::message')
-# Certificate Issued 🎓
+# Certificate Issued
 
 Hello {{ $user->name }},
 
-Congratulations! Your certificate for:
-
-**{{ $course->title }}**
-
-has been issued successfully.
+Congratulations! Your certificate for **{{ $course->title }}** has been issued successfully.
 
 @component('mail::panel')
 **Serial:** {{ $certificate->serial }}
@@ -17,7 +13,7 @@ has been issued successfully.
 Download Certificate
 @endcomponent
 
-@component('mail::button', ['url' => $verifyUrl])
+@component('mail::button', ['url' => $verifyUrl, 'color' => 'gray'])
 Verify Certificate
 @endcomponent
 

@@ -1,11 +1,9 @@
 @component('mail::message')
-# 🎉 Course Completed!
+# Course Completed
 
-Hello **{{ $user->name }}**,  
+Hello **{{ $user->name }}**,
 
-Congratulations! You have successfully completed:
-
-## ✅ {{ $course->title }}
+Congratulations! You have successfully completed **{{ $course->title }}**.
 
 @if($course->description)
 {{ $course->description }}
@@ -17,8 +15,8 @@ Your certificate is ready.
 Verify Certificate
 @endcomponent
 
-If you want to download directly from your dashboard, log into your account.
+You can also download it directly from your dashboard.
 
-Thanks,  
-**{{ config('app.name') }}**
+Thanks,<br>
+{{ config('app.name') }}
 @endcomponent

@@ -1,4 +1,4 @@
-<h2>Enrollment Confirmed ✅</h2>
+<h2>Enrollment Confirmed</h2>
 
 <p>Hello {{ $user->name }},</p>
 

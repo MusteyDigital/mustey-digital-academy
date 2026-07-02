@@ -88,7 +88,7 @@
                             @else
                                 <a href="{{ route('courses.show', $course->id) }}"
                                    class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm rounded-xl font-medium hover:bg-green-700 transition">
-                                    ✅ Review
+                                    Review
                                 </a>
                             @endif
 

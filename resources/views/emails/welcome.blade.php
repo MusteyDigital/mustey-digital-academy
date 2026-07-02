@@ -1,7 +1,7 @@
 @component('mail::message')
-# Welcome, {{ $user->name }} 🎉
+# Welcome, {{ $user->name }}
 
-Thanks for signing up on **Nexdus Academy x Mustey Digital Academy**. Welcome aboard to Kebbi State Tech Bootcamp 2026.
+Thanks for signing up on **{{ config('app.name') }}**. We're excited to have you on board.
 
 @component('mail::button', ['url' => config('app.url')])
 Go to Dashboard

@@ -7,9 +7,13 @@
 **Subject:** {{ $contactMessage->subject }}
 @endif
 
+@component('mail::panel')
 {{ $contactMessage->message }}
+@endcomponent
 
-This message was saved to your contact_messages table (ID #{{ $contactMessage->id }}).
+@component('mail::button', ['url' => route('admin.contact-messages.show', $contactMessage->id)])
+View Message
+@endcomponent
 
 Thanks,<br>
 {{ config('app.name') }}
