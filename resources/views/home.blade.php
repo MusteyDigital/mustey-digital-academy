@@ -31,6 +31,7 @@
                     <a href="#featured" class="text-slate-600 hover:text-blue-600 transition">Featured</a>
                     <a href="#courses" class="text-slate-600 hover:text-blue-600 transition">Courses</a>
                     <a href="#features" class="text-slate-600 hover:text-blue-600 transition">Why us</a>
+                    <a href="{{ route('contact') }}" class="text-slate-600 hover:text-blue-600 transition">Contact</a>
                 </nav>
 
                 <div class="flex items-center gap-2 shrink-0">
@@ -263,8 +264,13 @@
                 </div>
             </div>
 
-            <div class="mt-8 border-t border-white/10 pt-6 text-sm text-blue-100/70">
-                © {{ date('Y') }} {{ config('app.name', 'Mustey Digital Academy') }}. All rights reserved.
+            <div class="mt-8 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-blue-100/70">
+                <span>© {{ date('Y') }} {{ config('app.name', 'Mustey Digital Academy') }}. All rights reserved.</span>
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('home') }}" class="hover:text-white transition">Home</a>
+                    <a href="{{ url('/courses') }}" class="hover:text-white transition">Courses</a>
+                    <a href="{{ route('contact') }}" class="hover:text-white transition">Contact</a>
+                </div>
             </div>
         </div>
     </section>
