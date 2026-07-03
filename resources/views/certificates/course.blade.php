@@ -197,7 +197,7 @@ body {
 </td>
 
 <td class="logo-center">
-Nexdus Academy × Mustey Digital Academy
+Mustey Digital Academy
 </td>
 
 <td class="logo-right">
@@ -251,7 +251,7 @@ Verify: {{ $verifyUrl }}
 <div class="sig-wrap">
 <div class="sig-space"></div>
 <div class="sig-line">
-Nexdus Academy
+Mustey Digital Academy
 </div>
 </div>
 </td>

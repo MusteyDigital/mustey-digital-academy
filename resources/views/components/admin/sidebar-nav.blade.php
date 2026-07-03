@@ -14,22 +14,16 @@
         return request()->routeIs($match);
     };
 @endphp
-<aside class="w-full md:w-64 md:min-h-screen bg-white border-r border-slate-200">
-    {{-- Brand --}}
-    <div class="p-5 border-b border-slate-100">
-        <div class="font-bold text-slate-800 text-lg">Admin Panel</div>
-        <div class="text-xs text-slate-500 mt-1">Mustey Digital Academy</div>
-        <div class="mt-3 text-xs text-slate-500">
-            Logged in as:
-            <span class="font-semibold text-slate-700">{{ auth()->user()->name }}</span>
-        </div>
+<div class="bg-white lg:border lg:border-slate-200 lg:shadow-sm lg:rounded-2xl overflow-hidden">
+    <div class="p-4 border-b border-slate-100 bg-slate-50 hidden lg:block">
+        <p class="text-sm font-semibold text-slate-800">Navigation</p>
+        <p class="text-xs text-slate-500">Admin tools & reports</p>
     </div>
 
-    {{-- Nav --}}
-    <nav class="p-3 space-y-1">
+    <nav class="p-1 lg:p-3 space-y-1">
         @foreach($nav as $item)
             <a href="{{ route($item['route']) }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition
+               class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition
                       {{ $isActive($item['match'])
                             ? 'bg-slate-900 text-white'
                             : 'text-slate-700 hover:bg-slate-50' }}">
@@ -41,21 +35,13 @@
         @endforeach
     </nav>
 
-    {{-- Footer --}}
-    <div class="p-4 border-t border-slate-100 mt-auto">
+    <div class="p-4 border-t border-slate-100 bg-slate-50 hidden lg:block">
         <a href="{{ route('dashboard') }}"
-           class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-800 transition">
+           class="inline-flex items-center justify-center gap-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Main App
+            Back to Main Dashboard
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="mt-3">
-            @csrf
-            <button type="submit"
-                    class="w-full rounded-xl bg-red-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-red-700 transition">
-                Logout
-            </button>
-        </form>
     </div>
-</aside>
+</div>
