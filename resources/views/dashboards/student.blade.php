@@ -48,7 +48,7 @@
     <div class="rounded-2xl p-6 text-white" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">
         <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
-                <h1 class="text-2xl font-bold">Welcome back, {{ auth()->user()->name }} 👋</h1>
+                <h1 class="text-2xl font-bold">Welcome back, {{ auth()->user()->name }}</h1>
                 <p class="text-blue-100 mt-1 text-sm">Keep pushing — your skills are growing every day.</p>
             </div>
             <div class="text-right">
@@ -151,18 +151,21 @@
                         <div class="flex flex-wrap gap-2 pt-1">
                             @if($nextLesson)
                                 <a href="{{ route('lessons.show', [$course->id, $nextLesson->id]) }}"
-                                   class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 font-medium">
-                                    Continue →
+                                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 font-medium">
+                                    Continue
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                                 </a>
                             @else
                                 <a href="{{ route('courses.show', $course->id) }}"
-                                   class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 font-medium">
-                                    ✅ Review
+                                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    Review
                                 </a>
                             @endif
                             @if($latestCertificate)
                                 <a href="{{ route('certificates.download', $course->id) }}"
-                                   class="inline-flex items-center px-4 py-2 border border-slate-200 text-slate-700 text-sm rounded-lg hover:bg-slate-50">
+                                   class="inline-flex items-center gap-1.5 px-4 py-2 border border-slate-200 text-slate-700 text-sm rounded-lg hover:bg-slate-50">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15a4 4 0 100-8 4 4 0 000 8zm0 0v6m-4-2.5L6 21m10-2.5l2 2.5"/></svg>
                                     Certificate
                                 </a>
                             @endif
@@ -178,20 +181,43 @@
     @if($isDataAnalysisStudent ?? false)
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <div class="flex items-center justify-between mb-5">
-            <div>
-                <h2 class="text-lg font-bold text-slate-800">🧠 DRAB Performance</h2>
-                <p class="text-sm text-slate-500">Your adaptive reasoning benchmark summary.</p>
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">DRAB Performance</h2>
+                    <p class="text-sm text-slate-500">Your adaptive reasoning benchmark summary.</p>
+                </div>
             </div>
             <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Level {{ $drabLevel ?? 1 }}</span>
         </div>
 
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
-            @foreach([['Attempts', $drabTotalAttempts ?? 0, 'slate'], ['Avg Accuracy', number_format((float)($drabAverageAccuracy ?? 0), 1).'%', 'blue'], ['Best Accuracy', number_format((float)($drabBestAccuracy ?? 0), 1).'%', 'green'], ['Streak 🔥', $drabCurrentStreak ?? 0, 'orange'], ['Best 🏆', $drabBestStreak ?? 0, 'amber']] as [$label, $value, $color])
             <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
-                <div class="text-xs text-slate-500 mb-1">{{ $label }}</div>
-                <div class="text-xl font-bold text-slate-800">{{ $value }}</div>
+                <div class="text-xs text-slate-500 mb-1">Attempts</div>
+                <div class="text-xl font-bold text-slate-800">{{ $drabTotalAttempts ?? 0 }}</div>
             </div>
-            @endforeach
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
+                <div class="text-xs text-slate-500 mb-1">Avg Accuracy</div>
+                <div class="text-xl font-bold text-slate-800">{{ number_format((float)($drabAverageAccuracy ?? 0), 1) }}%</div>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
+                <div class="text-xs text-slate-500 mb-1">Best Accuracy</div>
+                <div class="text-xl font-bold text-slate-800">{{ number_format((float)($drabBestAccuracy ?? 0), 1) }}%</div>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
+                <div class="flex items-center justify-center gap-1 text-xs text-slate-500 mb-1">
+                    <svg class="w-3.5 h-3.5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 0S9 4 9 8.5c0 1.5 1 2.5 1 2.5S8 9 8 6.5C4.5 9 3 13 3 15.5 3 20.194 6.806 24 11.5 24S20 20.194 20 15.5c0-4-2.5-7-4-8.5.5 2 0 4-1 4.5 0 0 .5-3-1.5-6.5z"/></svg>
+                    Streak
+                </div>
+                <div class="text-xl font-bold text-slate-800">{{ $drabCurrentStreak ?? 0 }}</div>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
+                <div class="flex items-center justify-center gap-1 text-xs text-slate-500 mb-1">
+                    <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M5 4a1 1 0 011-1h12a1 1 0 011 1v2h1.5A1.5 1.5 0 0122 7.5v1A4.5 4.5 0 0117.5 13H17c-.6 1.6-1.9 2.8-3.5 3.3V19h2a1 1 0 010 2H8a1 1 0 010-2h2v-2.7C8.4 15.8 7.1 14.6 6.5 13H6A4.5 4.5 0 011.5 8.5v-1A1.5 1.5 0 013 6h1.5V4H5zm-1.5 4v.5A2.5 2.5 0 006 11c-.3-1-.5-2-.5-3H3.5zm15 0c0 1-.2 2-.5 3a2.5 2.5 0 002.5-2.5V8h-2z"/></svg>
+                    Best
+                </div>
+                <div class="text-xl font-bold text-slate-800">{{ $drabBestStreak ?? 0 }}</div>
+            </div>
         </div>
 
         <div>
@@ -246,7 +272,10 @@
                                 <div class="text-sm font-medium text-slate-800 truncate">{{ optional($completionLesson)->title ?? 'Lesson' }}</div>
                                 <div class="text-xs text-slate-500">{{ $completion->completed_at ? \Carbon\Carbon::parse($completion->completed_at)->diffForHumans() : '' }}</div>
                             </div>
-                            <span class="ml-3 text-xs bg-green-100 text-green-700 font-semibold px-2 py-1 rounded-full shrink-0">✅ Done</span>
+                            <span class="ml-3 inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 font-semibold px-2 py-1 rounded-full shrink-0">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                Done
+                            </span>
                         </div>
                     @endforeach
                 </div>
@@ -308,7 +337,10 @@
     {{-- Upcoming Live Sessions --}}
     @if($upcomingLiveSessions->isNotEmpty())
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-        <h2 class="text-base font-bold text-slate-800 mb-4">📅 Upcoming Live Sessions</h2>
+        <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Upcoming Live Sessions
+        </h2>
         <div class="space-y-3">
             @foreach($upcomingLiveSessions as $liveCourse)
             <div class="flex items-center justify-between p-4 rounded-xl border border-blue-100 bg-blue-50">
