@@ -37,19 +37,6 @@
     {{-- Navigation --}}
     <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
 
-        @php
-        function sidebarLink($route, $label, $icon) {
-            $active = request()->routeIs($route);
-            $base = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group";
-            $activeClass = "bg-blue-600 text-white shadow-lg shadow-blue-600/30";
-            $inactiveClass = "text-slate-400 hover:bg-white/10 hover:text-white";
-            echo "<a href=\"" . route($route) . "\" class=\"$base " . ($active ? $activeClass : $inactiveClass) . "\">
-                <span class=\"text-base\">$icon</span>
-                <span>$label</span>
-            </a>";
-        }
-        @endphp
-
         {{-- All roles --}}
         <a href="{{ route('dashboard') }}"
            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-400 hover:bg-white/10 hover:text-white' }}">
