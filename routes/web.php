@@ -646,3 +646,8 @@ Route::post('/courses/{course}/lessons/{lesson}/comments', [\App\Http\Controller
 Route::delete('/courses/{course}/lessons/{lesson}/comments/{comment}', [\App\Http\Controllers\LessonCommentController::class, 'destroy'])
     ->name('lessons.comments.destroy');
 
+
+// Demo login routes
+use App\Http\Controllers\DemoController;
+Route::get('/demo/student',    [DemoController::class, 'loginAsStudent'])->name('demo.student');
+Route::get('/demo/instructor', [DemoController::class, 'loginAsInstructor'])->name('demo.instructor');
