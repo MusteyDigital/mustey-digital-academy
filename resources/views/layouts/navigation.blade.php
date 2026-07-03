@@ -1,4 +1,4 @@
-<nav x-data="{ mobileSidebar: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ mobileSidebar: false }" class="bg-white border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
 
@@ -6,10 +6,10 @@
             <div class="flex items-center gap-3 min-w-0">
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                        <x-application-logo class="block h-9 w-auto fill-current text-slate-800" />
                     </a>
                 </div>
-                <span class="block sm:hidden min-w-0 truncate text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <span class="block sm:hidden min-w-0 truncate text-sm font-semibold text-slate-800">
                     {{ config('app.name', 'Mustey Digital Academy') }}
                 </span>
 
@@ -30,10 +30,10 @@
             {{-- RIGHT: User Dropdown + Mobile Sidebar Button --}}
             <div class="flex items-center gap-3">
 
-                {{-- Notifications (optional: keep if you have it) --}}
+                {{-- Notifications --}}
                 <div class="flex items-center">
                     <a href="{{ route('notifications.index') }}"
-                       class="relative inline-flex items-center px-2 py-2 text-gray-500 hover:text-gray-700">
+                       class="relative inline-flex items-center px-2 py-2 text-slate-500 hover:text-blue-600 transition">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
@@ -45,7 +45,7 @@
                 <button
                     type="button"
                     @click="mobileSidebar = true"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:hidden"
+                    class="inline-flex items-center justify-center p-2 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:hidden transition"
                     aria-label="Open sidebar"
                 >
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-xl text-slate-500 bg-white hover:text-slate-700 focus:outline-none transition ease-in-out duration-150">
                                 <div>{{ Auth::user()->name }}</div>
 
                                 <div class="ms-1">
@@ -106,7 +106,7 @@
 
         {{-- drawer --}}
         <div
-            class="absolute left-0 top-0 h-full w-80 max-w-[85%] bg-white dark:bg-gray-900 shadow-xl p-4 overflow-y-auto"
+            class="absolute left-0 top-0 h-full w-80 max-w-[85%] bg-white shadow-xl p-4 overflow-y-auto"
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="-translate-x-full"
             x-transition:enter-end="translate-x-0"
@@ -116,8 +116,8 @@
         >
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
-                    <x-application-logo class="block h-8 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    <span class="font-semibold text-gray-800 dark:text-gray-200">
+                    <x-application-logo class="block h-8 w-auto fill-current text-slate-800" />
+                    <span class="font-semibold text-slate-800">
                         {{ config('app.name', 'Mustey Digital Academy') }}
                     </span>
                 </div>
@@ -125,7 +125,7 @@
                 <button
                     type="button"
                     @click="mobileSidebar = false"
-                    class="p-2 rounded-md text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition"
                     aria-label="Close sidebar"
                 >
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,7 +135,7 @@
                 </button>
             </div>
 
-            {{-- ✅ Use the same sidebar content --}}
+            {{-- Use the same sidebar content --}}
             @include('layouts.sidebar')
         </div>
     </div>

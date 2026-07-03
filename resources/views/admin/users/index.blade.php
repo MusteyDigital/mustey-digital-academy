@@ -1,12 +1,16 @@
 <x-layouts.admin>
     <x-slot name="header">
         <div class="flex items-center justify-between flex-wrap gap-2">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-bold text-xl text-slate-800 leading-tight">
                 Admin — Users
             </h2>
 
-            <a href="{{ route('admin.dashboard') }}" class="underline text-gray-600">
-                ← Back to Admin Dashboard
+            <a href="{{ route('admin.dashboard') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Admin Dashboard
             </a>
         </div>
     </x-slot>
@@ -16,20 +20,20 @@
 
             {{-- Flash --}}
             @if(session('success'))
-                <div class="rounded-lg border border-green-200 bg-green-50 p-3 text-green-800">
+                <div class="rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800 text-sm">
                     {{ session('success') }}
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800">
+                <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-800 text-sm">
                     {{ session('error') }}
                 </div>
             @endif
 
             @if($errors->any())
-                <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800">
-                    <ul class="list-disc pl-5">
+                <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-800 text-sm">
+                    <ul class="list-disc pl-5 space-y-1">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -38,26 +42,34 @@
             @endif
 
             {{-- Search + Export --}}
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 border">
-                <form method="GET" class="flex flex-wrap gap-2 items-end">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <form method="GET" class="flex flex-wrap gap-3 items-end">
 
                     <div class="flex-1 min-w-[220px]">
-                        <label class="text-sm text-gray-600">Search</label>
-                        <input name="q" value="{{ $q }}" class="w-full border rounded p-2" placeholder="Name or email">
+                        <label class="text-sm font-medium text-slate-600 mb-1 block">Search</label>
+                        <input name="q" value="{{ $q }}"
+                               class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                               placeholder="Name or email">
                     </div>
 
-                    <button class="rounded bg-gray-900 text-white px-4 py-2 text-sm font-semibold">
+                    <button class="inline-flex items-center gap-2 rounded-xl bg-slate-900 text-white px-5 py-2.5 text-sm font-semibold hover:bg-slate-800 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                        </svg>
                         Filter
                     </button>
 
                     <a href="{{ route('admin.users.index') }}"
-                       class="rounded border px-4 py-2 text-sm hover:bg-gray-50">
+                       class="inline-flex items-center px-5 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
                         Reset
                     </a>
 
                     {{-- Export CSV --}}
                     <a href="{{ route('admin.users.export', ['q' => $q]) }}"
-                       class="rounded bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700">
+                       class="inline-flex items-center gap-2 rounded-xl bg-green-600 text-white px-5 py-2.5 text-sm font-semibold hover:bg-green-700 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
                         Export CSV
                     </a>
 
@@ -65,15 +77,15 @@
             </div>
 
             {{-- Table --}}
-            <div class="bg-white shadow-sm sm:rounded-lg border overflow-hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
-                        <thead class="bg-gray-50 border-b">
-                            <tr>
-                                <th class="text-left p-3">User</th>
-                                <th class="text-left p-3">Email</th>
-                                <th class="text-left p-3">Role</th>
-                                <th class="text-left p-3">Action</th>
+                        <thead>
+                            <tr class="border-b border-slate-200">
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">User</th>
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Email</th>
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Role</th>
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Action</th>
                             </tr>
                         </thead>
 
@@ -83,37 +95,37 @@
                                     $role = $u->role ?? 'student';
 
                                     $badge = match($role) {
-                                        'admin' => 'bg-purple-100 text-purple-800 border-purple-200',
-                                        'instructor' => 'bg-blue-100 text-blue-800 border-blue-200',
-                                        default => 'bg-green-100 text-green-800 border-green-200',
+                                        'admin' => 'bg-purple-50 text-purple-700 border-purple-200',
+                                        'instructor' => 'bg-blue-50 text-blue-700 border-blue-200',
+                                        default => 'bg-green-50 text-green-700 border-green-200',
                                     };
 
                                     $isMe = auth()->id() === $u->id;
                                 @endphp
 
-                                <tr class="border-b">
-                                    <td class="p-3">
-                                        <div class="font-semibold text-gray-900">{{ $u->name }}</div>
-                                        <div class="text-xs text-gray-500">ID: {{ $u->id }}</div>
+                                <tr class="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4">
+                                        <div class="font-semibold text-slate-800">{{ $u->name }}</div>
+                                        <div class="text-xs text-slate-400">ID: {{ $u->id }}</div>
 
                                         @if($isMe)
-                                            <div class="mt-1 inline-flex text-xs rounded-full bg-gray-100 text-gray-700 px-2 py-1 border">
-                                                (This is you)
+                                            <div class="mt-1.5 inline-flex text-xs rounded-full bg-slate-100 text-slate-600 px-2.5 py-1 border border-slate-200 font-medium">
+                                                This is you
                                             </div>
                                         @endif
                                     </td>
 
-                                    <td class="p-3 text-gray-700">
+                                    <td class="py-3 px-4 text-slate-700">
                                         {{ $u->email }}
                                     </td>
 
-                                    <td class="p-3">
+                                    <td class="py-3 px-4">
                                         <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold border {{ $badge }}">
                                             {{ $role }}
                                         </span>
                                     </td>
 
-                                    <td class="p-3">
+                                    <td class="py-3 px-4">
                                         <form
                                             method="POST"
                                             action="{{ route('admin.users.role', $u) }}"
@@ -125,7 +137,7 @@
 
                                             <select
                                                 name="role"
-                                                class="border rounded p-2 text-sm"
+                                                class="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition disabled:opacity-60 disabled:cursor-not-allowed"
                                                 data-current="{{ $role }}"
                                                 {{ $isMe ? 'disabled' : '' }}
                                             >
@@ -136,7 +148,7 @@
 
                                             <button
                                                 type="submit"
-                                                class="rounded bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                                                class="rounded-xl bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
                                                 {{ $isMe ? 'disabled' : '' }}
                                             >
                                                 Update
@@ -144,15 +156,15 @@
                                         </form>
 
                                         @if($isMe)
-                                            <p class="text-xs text-gray-500 mt-2">
-                                                You can’t change your own role for safety.
+                                            <p class="text-xs text-slate-400 mt-2">
+                                                You can't change your own role for safety.
                                             </p>
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="p-4 text-gray-600">
+                                    <td colspan="4" class="py-10 px-4 text-slate-500 text-center">
                                         No users found.
                                     </td>
                                 </tr>
@@ -161,7 +173,7 @@
                     </table>
                 </div>
 
-                <div class="p-4">
+                <div class="p-4 border-t border-slate-100">
                     {{ $users->links() }}
                 </div>
             </div>

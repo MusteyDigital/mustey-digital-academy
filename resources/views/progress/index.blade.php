@@ -50,9 +50,9 @@
                             </p>
                         </div>
                         @if($percent === 100)
-                            <span class="shrink-0 bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">✅ Complete</span>
+                            <span class="shrink-0 bg-green-50 text-green-700 text-xs font-bold px-3 py-1 rounded-full">Complete</span>
                         @else
-                            <span class="shrink-0 bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">In Progress</span>
+                            <span class="shrink-0 bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">In Progress</span>
                         @endif
                     </div>
 

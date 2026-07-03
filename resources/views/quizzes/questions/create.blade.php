@@ -2,28 +2,31 @@
     <x-slot name="header">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                <h2 class="font-semibold text-xl text-slate-800 leading-tight">
                     Add Question — {{ $quiz->title }}
                 </h2>
-                <p class="text-sm text-gray-600 mt-1">
+                <p class="text-sm text-slate-500 mt-1">
                     Course: <span class="font-semibold">{{ $course->title }}</span>
                 </p>
             </div>
 
             <a href="{{ route('quizzes.show', [$course->id, $quiz->id]) }}"
-               class="text-sm text-gray-600 hover:text-gray-900 underline">
-                ← Back to Quiz
+               class="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Quiz
             </a>
         </div>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
 
-                {{-- Validation summary (optional but helpful) --}}
+                {{-- Validation summary --}}
                 @if ($errors->any())
-                    <div class="mb-4 rounded-md bg-red-50 p-4 text-red-800 border border-red-200">
+                    <div class="mb-4 rounded-xl bg-red-50 p-4 text-red-800 border border-red-200">
                         <div class="font-semibold mb-1">Please fix the errors below.</div>
                         <ul class="list-disc pl-5 text-sm space-y-1">
                             @foreach ($errors->all() as $error)
@@ -39,7 +42,7 @@
                     <div>
                         <x-input-label for="question" value="Question" />
                         <textarea id="question"
-                                  class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm p-2"
+                                  class="block mt-1 w-full rounded-xl border-slate-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm p-2.5"
                                   name="question" required>{{ old('question') }}</textarea>
                         <x-input-error :messages="$errors->get('question')" class="mt-2" />
                     </div>
@@ -72,7 +75,8 @@
 
                     <div>
                         <x-input-label for="correct_option" value="Correct Option (a, b, c, d)" />
-                        <select id="correct_option" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full"
+                        <select id="correct_option"
+                                class="rounded-xl border-slate-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm w-full"
                                 name="correct_option" required>
                             <option value="a" @selected(old('correct_option') === 'a')>A</option>
                             <option value="b" @selected(old('correct_option') === 'b')>B</option>
@@ -85,7 +89,7 @@
                         <x-primary-button>Save Question</x-primary-button>
 
                         <a href="{{ route('quizzes.show', [$course->id, $quiz->id]) }}"
-                           class="text-sm text-gray-600 hover:text-gray-900 underline">
+                           class="text-sm text-slate-500 hover:text-slate-700 hover:underline transition">
                             Cancel
                         </a>
                     </div>

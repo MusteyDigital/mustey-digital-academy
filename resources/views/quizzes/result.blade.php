@@ -9,7 +9,10 @@
         </div>
         <a href="{{ route('courses.show', $course->id) }}"
            class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition">
-            ← Back to Course
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Course
         </a>
     </div>
 
@@ -45,10 +48,17 @@
                 <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Questions</div>
                 <div class="text-3xl font-bold text-slate-800">{{ $totalQuestions }}</div>
             </div>
-            <div class="bg-{{ $passed ? 'green' : 'red' }}-50 rounded-2xl border border-{{ $passed ? 'green' : 'red' }}-200 p-4">
-                <div class="text-xs text-{{ $passed ? 'green' : 'red' }}-600 uppercase tracking-wide mb-1">Percentage</div>
-                <div class="text-3xl font-bold text-{{ $passed ? 'green' : 'red' }}-700">{{ number_format($percentage, 1) }}%</div>
-            </div>
+            @if($passed)
+                <div class="bg-green-50 rounded-2xl border border-green-200 p-4">
+                    <div class="text-xs text-green-600 uppercase tracking-wide mb-1">Percentage</div>
+                    <div class="text-3xl font-bold text-green-700">{{ number_format($percentage, 1) }}%</div>
+                </div>
+            @else
+                <div class="bg-red-50 rounded-2xl border border-red-200 p-4">
+                    <div class="text-xs text-red-600 uppercase tracking-wide mb-1">Percentage</div>
+                    <div class="text-3xl font-bold text-red-700">{{ number_format($percentage, 1) }}%</div>
+                </div>
+            @endif
         </div>
 
         @if(!is_null($quiz->pass_mark))

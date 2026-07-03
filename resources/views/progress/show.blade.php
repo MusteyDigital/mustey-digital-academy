@@ -6,7 +6,10 @@
         <div>
             <a href="{{ route('progress.index') }}"
                class="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 transition">
-                ← Back to My Progress
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to My Progress
             </a>
             <h1 class="text-2xl font-bold text-slate-800 mt-1">{{ $course->title }}</h1>
         </div>
@@ -46,8 +49,8 @@
                 </a>
 
                 @if($hasLiveAttendance)
-                    <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-green-100 text-green-800 text-xs font-semibold">
-                        ✅ Attendance Marked
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-green-50 text-green-700 text-xs font-semibold">
+                        Attendance Marked
                     </span>
                 @else
                     <form method="POST" action="{{ route('attendance.live.store', $course->id) }}">
@@ -93,14 +96,14 @@
                                 <td class="px-4 py-3 text-slate-800 font-medium">{{ $lesson->title }}</td>
                                 <td class="px-4 py-3">
                                     @if($done)
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">✅ Yes</span>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold">Yes</span>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-medium">No</span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3">
                                     @if($att)
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">✅ Marked</span>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold">Marked</span>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-medium">Not marked</span>
                                     @endif

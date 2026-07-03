@@ -1,46 +1,64 @@
 <x-layouts.admin>
+    <x-slot name="header">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+            <h2 class="font-bold text-xl text-slate-800 leading-tight">
+                Admin — Payments
+            </h2>
+
+            <a href="{{ route('admin.dashboard') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Admin Dashboard
+            </a>
+        </div>
+    </x-slot>
+
     @if(session('success'))
-        <div class="rounded-lg border border-green-200 bg-green-50 p-3 text-green-800">
+        <div class="rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800 text-sm">
             {{ session('success') }}
         </div>
     @endif
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white shadow-sm sm:rounded-lg p-5 border">
-            <p class="text-xs uppercase tracking-widest text-gray-500">Total Payments</p>
-            <p class="text-3xl font-bold mt-2">{{ $totalPayments }}</p>
+    {{-- Stats --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">Total Payments</p>
+            <p class="text-3xl font-bold text-slate-800 mt-2">{{ $totalPayments }}</p>
         </div>
 
-        <div class="bg-white shadow-sm sm:rounded-lg p-5 border">
-            <p class="text-xs uppercase tracking-widest text-gray-500">Successful Payments</p>
-            <p class="text-3xl font-bold mt-2">{{ $successfulPayments }}</p>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">Successful Payments</p>
+            <p class="text-3xl font-bold text-green-600 mt-2">{{ $successfulPayments }}</p>
         </div>
 
-        <div class="bg-white shadow-sm sm:rounded-lg p-5 border">
-            <p class="text-xs uppercase tracking-widest text-gray-500">Failed Payments</p>
-            <p class="text-3xl font-bold mt-2">{{ $failedPayments }}</p>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">Failed Payments</p>
+            <p class="text-3xl font-bold text-red-600 mt-2">{{ $failedPayments }}</p>
         </div>
 
-        <div class="bg-white shadow-sm sm:rounded-lg p-5 border">
-            <p class="text-xs uppercase tracking-widest text-gray-500">Total Revenue</p>
+        <div class="bg-gradient-to-br from-green-600 to-green-700 rounded-2xl shadow-sm p-5 text-white">
+            <p class="text-xs uppercase tracking-wide text-green-100 font-medium">Total Revenue</p>
             <p class="text-3xl font-bold mt-2">₦{{ number_format($totalSuccessfulRevenue) }}</p>
         </div>
     </div>
 
-    <div class="bg-white shadow-sm sm:rounded-lg p-6 border mt-6">
-        <h3 class="font-semibold text-gray-800 text-lg mb-4">Filter Payments</h3>
+    {{-- Filter --}}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-6">
+        <h3 class="font-semibold text-slate-800 text-lg mb-4">Filter Payments</h3>
 
         <form method="GET" action="{{ route('admin.payments.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-                <label class="block text-sm text-gray-600 mb-1">Search</label>
+                <label class="text-sm font-medium text-slate-600 mb-1 block">Search</label>
                 <input type="text" name="q" value="{{ $q }}"
                        placeholder="Student, email, reference, course"
-                       class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                       class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
             </div>
 
             <div>
-                <label class="block text-sm text-gray-600 mb-1">Status</label>
-                <select name="status" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                <label class="text-sm font-medium text-slate-600 mb-1 block">Status</label>
+                <select name="status" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                     <option value="">All</option>
                     <option value="success" {{ $status === 'success' ? 'selected' : '' }}>Success</option>
                     <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Pending</option>
@@ -49,8 +67,8 @@
             </div>
 
             <div>
-                <label class="block text-sm text-gray-600 mb-1">Course</label>
-                <select name="course_id" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                <label class="text-sm font-medium text-slate-600 mb-1 block">Course</label>
+                <select name="course_id" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                     <option value="">All Courses</option>
                     @foreach($courses as $course)
                         <option value="{{ $course->id }}" {{ (string) $courseId === (string) $course->id ? 'selected' : '' }}>
@@ -61,71 +79,81 @@
             </div>
 
             <div class="flex items-end gap-2">
-                <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition">
                     Apply
                 </button>
                 <a href="{{ route('admin.payments.index') }}"
-                   class="inline-flex items-center px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50">
+                   class="inline-flex items-center px-5 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
                     Reset
                 </a>
             </div>
         </form>
     </div>
 
-    <div class="bg-white shadow-sm sm:rounded-lg p-6 border mt-6">
+    {{-- Table --}}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mt-6">
         <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
-            <h3 class="font-semibold text-gray-800 text-lg">Payments</h3>
+            <h3 class="font-semibold text-slate-800 text-lg">Payments</h3>
 
             <a href="{{ route('admin.payments.export.csv', request()->query()) }}"
-               class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+               class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-xl hover:bg-green-700 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
                 Export CSV
             </a>
         </div>
 
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
-                <thead class="bg-gray-50 border-b">
-                    <tr>
-                        <th class="text-left p-3">Student</th>
-                        <th class="text-left p-3">Course</th>
-                        <th class="text-left p-3">Amount</th>
-                        <th class="text-left p-3">Status</th>
-                        <th class="text-left p-3">Reference</th>
-                        <th class="text-left p-3">Date</th>
-                        <th class="text-left p-3">Receipt</th>
+                <thead>
+                    <tr class="border-b border-slate-200">
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Student</th>
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Course</th>
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Amount</th>
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Status</th>
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Reference</th>
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Date</th>
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Receipt</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($payments as $payment)
-                        <tr class="border-b">
-                            <td class="p-3">
-                                <div class="font-semibold text-gray-900">{{ $payment->user->name ?? '—' }}</div>
-                                <div class="text-gray-500">{{ $payment->user->email ?? '—' }}</div>
+                        @php
+                            $statusBadge = match($payment->status) {
+                                'success' => 'bg-green-50 text-green-700 border border-green-200',
+                                'pending' => 'bg-yellow-50 text-yellow-700 border border-yellow-200',
+                                'failed' => 'bg-red-50 text-red-700 border border-red-200',
+                                default => 'bg-slate-100 text-slate-600 border border-slate-200',
+                            };
+                        @endphp
+                        <tr class="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition">
+                            <td class="py-3 px-4">
+                                <div class="font-semibold text-slate-800">{{ $payment->user->name ?? '—' }}</div>
+                                <div class="text-xs text-slate-500">{{ $payment->user->email ?? '—' }}</div>
                             </td>
-                            <td class="p-3">{{ $payment->course->title ?? '—' }}</td>
-                            <td class="p-3 font-semibold">₦{{ number_format($payment->amount) }}</td>
-                            <td class="p-3">
-                                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold
-                                    {{ $payment->status === 'success' ? 'bg-green-100 text-green-800' : '' }}
-                                    {{ $payment->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                    {{ $payment->status === 'failed' ? 'bg-red-100 text-red-800' : '' }}">
+                            <td class="py-3 px-4 text-slate-700">{{ $payment->course->title ?? '—' }}</td>
+                            <td class="py-3 px-4 font-semibold text-slate-800">₦{{ number_format($payment->amount) }}</td>
+                            <td class="py-3 px-4">
+                                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold {{ $statusBadge }}">
                                     {{ strtoupper($payment->status) }}
                                 </span>
                             </td>
-                            <td class="p-3 break-all">{{ $payment->reference }}</td>
-                            <td class="p-3">
+                            <td class="py-3 px-4 break-all text-slate-500 text-xs">{{ $payment->reference }}</td>
+                            <td class="py-3 px-4 text-slate-500">
                                 {{ $payment->paid_at ? $payment->paid_at->format('M j, Y g:i A') : $payment->created_at->format('M j, Y g:i A') }}
                             </td>
-                            <td class="p-3">
+                            <td class="py-3 px-4">
                                 <a href="{{ route('payments.receipt', $payment->id) }}"
-                                   class="underline text-blue-600">
+                                   class="inline-flex items-center gap-1 text-blue-600 font-medium hover:text-blue-700 transition">
                                     View
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-4 text-gray-600">No payments found.</td>
+                            <td colspan="7" class="py-10 px-4 text-slate-500 text-center">No payments found.</td>
                         </tr>
                     @endforelse
                 </tbody>

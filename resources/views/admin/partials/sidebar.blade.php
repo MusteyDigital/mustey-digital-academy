@@ -1,58 +1,46 @@
-<div class="bg-white border shadow-sm sm:rounded-lg overflow-hidden">
-    <div class="p-4 border-b bg-gray-50">
-        <p class="text-sm font-semibold text-gray-800">Navigation</p>
-        <p class="text-xs text-gray-500">Admin tools & reports</p>
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="p-4 border-b border-slate-100 bg-slate-50">
+        <p class="text-sm font-semibold text-slate-800">Navigation</p>
+        <p class="text-xs text-slate-500 mt-0.5">Admin tools & reports</p>
     </div>
 
     @php
         $is = fn($name) => request()->routeIs($name)
-            ? 'bg-gray-900 text-white'
-            : 'text-gray-700 hover:bg-gray-50';
+            ? 'bg-slate-900 text-white'
+            : 'text-slate-700 hover:bg-slate-50';
+
+        $navItems = [
+            ['route' => 'admin.dashboard', 'match' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
+            ['route' => 'admin.users.index', 'match' => 'admin.users.*', 'label' => 'Users', 'icon' => 'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 100-8 4 4 0 000 8zm6 0a4 4 0 100-8 4 4 0 000 8z'],
+            ['route' => 'admin.courses.index', 'match' => 'admin.courses.*', 'label' => 'Courses', 'icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'],
+            ['route' => 'admin.enrollments.index', 'match' => 'admin.enrollments.*', 'label' => 'Enrollments', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
+            ['route' => 'admin.payments.index', 'match' => 'admin.payments.*', 'label' => 'Payments', 'icon' => 'M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'],
+            ['route' => 'admin.coupons.index', 'match' => 'admin.coupons.*', 'label' => 'Coupons', 'icon' => 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z'],
+            ['route' => 'admin.attendance.lessons', 'match' => 'admin.attendance.lessons', 'label' => 'Lesson Attendance', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
+            ['route' => 'admin.attendance.live', 'match' => 'admin.attendance.live', 'label' => 'Live Attendance', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
+            ['route' => 'admin.certificates.index', 'match' => 'admin.certificates.*', 'label' => 'Certificates', 'icon' => 'M12 15a4 4 0 100-8 4 4 0 000 8zm0 0v6m-4-2.5L6 21m10-2.5l2 2.5'],
+        ];
     @endphp
 
     <nav class="p-3 space-y-1">
-
-        <a href="{{ route('admin.dashboard') }}"
-           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold {{ $is('admin.dashboard') }}">
-            🏠 Dashboard
-        </a>
-
-        <a href="{{ route('admin.users.index') }}"
-           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold {{ request()->routeIs('admin.users.*') ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50' }}">
-            👥 Users
-        </a>
-
-        <a href="{{ route('admin.courses.index') }}"
-           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold {{ request()->routeIs('admin.courses.*') ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50' }}">
-            📚 Courses
-        </a>
-
-        <a href="{{ route('admin.enrollments.index') }}"
-           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold {{ request()->routeIs('admin.enrollments.*') ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50' }}">
-            🧾 Enrollments
-        </a>
-
-        <a href="{{ route('admin.attendance.lessons') }}"
-           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold {{ request()->routeIs('admin.attendance.lessons') ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50' }}">
-            ✅ Lesson Attendance
-        </a>
-
-        <a href="{{ route('admin.attendance.live') }}"
-           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold {{ request()->routeIs('admin.attendance.live') ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50' }}">
-            🎥 Live Attendance
-        </a>
-
-        <a href="{{ route('admin.certificates.index') }}"
-           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold {{ request()->routeIs('admin.certificates.*') ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50' }}">
-            🏅 Certificates
-        </a>
-
+        @foreach($navItems as $item)
+            <a href="{{ route($item['route']) }}"
+               class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition {{ $is($item['match']) }}">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['icon'] }}" />
+                </svg>
+                {{ $item['label'] }}
+            </a>
+        @endforeach
     </nav>
 
-    <div class="p-4 border-t bg-gray-50">
+    <div class="p-4 border-t border-slate-100 bg-slate-50">
         <a href="{{ route('dashboard') }}"
-           class="inline-flex items-center justify-center w-full rounded-md border px-4 py-2 text-sm hover:bg-white">
-            ← Back to Main Dashboard
+           class="inline-flex items-center justify-center gap-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Main Dashboard
         </a>
     </div>
 </div>

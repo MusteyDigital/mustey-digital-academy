@@ -1,12 +1,16 @@
 <x-layouts.admin>
     <x-slot name="header">
         <div class="flex items-center justify-between flex-wrap gap-2">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-bold text-xl text-slate-800 leading-tight">
                 Admin — Lesson Attendance
             </h2>
 
-            <a href="{{ route('admin.dashboard') }}" class="underline text-gray-600">
-                ← Back to Admin Dashboard
+            <a href="{{ route('admin.dashboard') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Admin Dashboard
             </a>
         </div>
     </x-slot>
@@ -15,86 +19,89 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             {{-- Search --}}
-            <div class="bg-white shadow-sm sm:rounded-lg p-6 border">
-                <form method="GET" class="flex flex-wrap gap-2 items-end">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <form method="GET" class="flex flex-wrap gap-3 items-end">
                     <div class="flex-1 min-w-[260px]">
-                        <label class="text-sm text-gray-600">Search</label>
+                        <label class="text-sm font-medium text-slate-600 mb-1 block">Search</label>
                         <input name="q"
                                value="{{ $q }}"
-                               class="w-full border rounded p-2"
+                               class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                placeholder="Student name/email, lesson title, course, instructor">
                     </div>
 
-                    <button class="rounded bg-gray-900 text-white px-4 py-2 text-sm font-semibold">
+                    <button class="inline-flex items-center gap-2 rounded-xl bg-slate-900 text-white px-5 py-2.5 text-sm font-semibold hover:bg-slate-800 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                        </svg>
                         Filter
                     </button>
 
                     <a href="{{ route('admin.attendance.lessons') }}"
-                       class="rounded border px-4 py-2 text-sm hover:bg-gray-50">
+                       class="inline-flex items-center px-5 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
                         Reset
                     </a>
                 </form>
 
                 @if($q !== '')
-                    <p class="text-sm text-gray-600 mt-3">
-                        Showing results for: <span class="font-semibold">{{ $q }}</span>
-                        • Found: <span class="font-semibold">{{ $records->total() }}</span>
+                    <p class="text-sm text-slate-500 mt-4">
+                        Showing results for: <span class="font-semibold text-slate-700">{{ $q }}</span>
+                        · Found: <span class="font-semibold text-slate-700">{{ $records->total() }}</span>
                     </p>
                 @endif
             </div>
 
             {{-- Table --}}
-            <div class="bg-white shadow-sm sm:rounded-lg border overflow-hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
-                        <thead class="bg-gray-50 border-b">
-                            <tr>
-                                <th class="text-left p-3">Student</th>
-                                <th class="text-left p-3">Course</th>
-                                <th class="text-left p-3">Lesson</th>
-                                <th class="text-left p-3">Instructor</th>
-                                <th class="text-left p-3">Completed At</th>
+                        <thead>
+                            <tr class="border-b border-slate-200">
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Student</th>
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Course</th>
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Lesson</th>
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Instructor</th>
+                                <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Completed At</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @forelse($records as $r)
-                                <tr class="border-b">
-                                    <td class="p-3">
-                                        <div class="font-semibold text-gray-900">
+                                <tr class="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4">
+                                        <div class="font-semibold text-slate-800">
                                             {{ optional($r->user)->name ?? '—' }}
                                         </div>
-                                        <div class="text-xs text-gray-600">
+                                        <div class="text-xs text-slate-500">
                                             {{ optional($r->user)->email ?? '' }}
                                         </div>
                                     </td>
 
-                                    <td class="p-3">
+                                    <td class="py-3 px-4">
                                         @php $course = optional(optional($r->lesson)->course); @endphp
                                         @if($course && $course->id)
-                                            <a class="underline text-blue-600" href="{{ route('courses.show', $course->id) }}">
+                                            <a class="text-blue-600 font-medium hover:text-blue-700 transition" href="{{ route('courses.show', $course->id) }}">
                                                 {{ $course->title }}
                                             </a>
                                         @else
-                                            —
+                                            <span class="text-slate-400">—</span>
                                         @endif
                                     </td>
 
-                                    <td class="p-3 text-gray-800">
+                                    <td class="py-3 px-4 text-slate-700">
                                         {{ optional($r->lesson)->title ?? '—' }}
                                     </td>
 
-                                    <td class="p-3 text-gray-700">
+                                    <td class="py-3 px-4 text-slate-700">
                                         {{ optional(optional(optional($r->lesson)->course)->instructor)->name ?? '—' }}
                                     </td>
 
-                                    <td class="p-3 text-gray-700">
-                                        {{ optional($r->completed_at)->format('M j, Y g:ia') ?? '—' }}
+                                    <td class="py-3 px-4 text-slate-500">
+                                        {{ $r->completed_at ? $r->completed_at->format('M j, Y g:ia') : '—' }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="p-4 text-gray-600">
+                                    <td colspan="5" class="py-10 px-4 text-slate-500 text-center">
                                         No lesson attendance found.
                                     </td>
                                 </tr>
@@ -103,7 +110,7 @@
                     </table>
                 </div>
 
-                <div class="p-4">
+                <div class="p-4 border-t border-slate-100">
                     {{ $records->links() }}
                 </div>
             </div>

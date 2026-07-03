@@ -46,7 +46,7 @@
                 </td>
                 <td>
                     <div class="label">Gateway</div>
-                    <div class="value">{{ strtoupper($payment->gateway) }}</div>
+                    <div class="value">{{ strtoupper($payment->gateway ?? '—') }}</div>
                 </td>
             </tr>
             <tr>
@@ -68,7 +68,7 @@
                 </td>
                 <td>
                     <div class="label">Currency</div>
-                    <div class="value">{{ strtoupper($payment->currency) }}</div>
+                    <div class="value">{{ strtoupper($payment->currency ?? '—') }}</div>
                 </td>
             </tr>
         </table>
