@@ -11,12 +11,11 @@
 </head>
 <body class="font-sans antialiased overflow-x-hidden bg-slate-50">
     <x-toast />
-
     @auth
         @php $unreadNotifications = auth()->user()->unreadNotifications()->count(); @endphp
     @endauth
 
-    <div class="min-h-screen flex">
+    <div class="min-h-screen flex" x-data="{ mobileSidebarOpen: false }">
 
         {{-- Desktop Sidebar --}}
         @auth
@@ -25,13 +24,58 @@
             </aside>
         @endauth
 
+        {{-- Mobile Sidebar Drawer --}}
+        @auth
+            <div
+                x-show="mobileSidebarOpen"
+                x-cloak
+                class="fixed inset-0 z-50 md:hidden"
+                style="display: none;"
+            >
+                <div
+                    class="absolute inset-0 bg-black/50"
+                    @click="mobileSidebarOpen = false"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                ></div>
+
+                <div
+                    class="absolute left-0 top-0 h-full w-64 max-w-[85%] overflow-y-auto"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="-translate-x-full"
+                    x-transition:enter-end="translate-x-0"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="translate-x-0"
+                    x-transition:leave-end="-translate-x-full"
+                    @click="mobileSidebarOpen = false"
+                >
+                    @include('layouts.sidebar')
+                </div>
+            </div>
+        @endauth
+
         {{-- Main Content --}}
         <div class="flex-1 min-w-0 flex flex-col">
-
             {{-- Top bar --}}
             @auth
             <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-                <div>
+                <div class="flex items-center gap-3">
+                    {{-- Mobile Menu Button --}}
+                    <button
+                        type="button"
+                        @click="mobileSidebarOpen = true"
+                        class="md:hidden text-slate-500 hover:text-blue-600 transition"
+                        aria-label="Open menu"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+
                     @isset($header)
                         <h1 class="text-lg font-semibold text-slate-800">{{ $header }}</h1>
                     @endisset
@@ -52,7 +96,6 @@
                 </div>
             </header>
             @endauth
-
             {{-- Page Content --}}
             <main class="flex-1 p-6">
                 @isset($slot)
@@ -61,7 +104,6 @@
                     @yield('content')
                 @endisset
             </main>
-
         </div>
     </div>
 </body>
