@@ -76,7 +76,7 @@ class ResetDemoData extends Command
         }
 
         // Re-seed the baseline 100% quiz attempt
-        $quiz = $course->quizzes()->first();
+        $quiz = $course->quizzes()->first(); // attached to last lesson
 
         if ($quiz) {
             $questions = $quiz->questions;
