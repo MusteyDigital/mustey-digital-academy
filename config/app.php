@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'demo_video_url' => env('DEMO_VIDEO_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
