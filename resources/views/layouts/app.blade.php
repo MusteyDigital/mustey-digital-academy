@@ -12,7 +12,21 @@
 <body class="font-sans antialiased overflow-x-hidden bg-slate-50">
     <x-toast />
     @auth
-        @php $unreadNotifications = auth()->user()->unreadNotifications()->count(); @endphp
+        @php
+            $unreadNotifications = auth()->user()->unreadNotifications()->count();
+            $isDemoUser = in_array(auth()->user()->email, [
+                'demo-student@musteydigitalacademy.online',
+                'demo-instructor@musteydigitalacademy.online',
+            ], true);
+        @endphp
+    @endauth
+
+    @auth
+        @if($isDemoUser)
+            <div class="bg-amber-400 text-amber-950 text-xs sm:text-sm font-semibold text-center py-1.5 px-4 sticky top-0 z-40">
+                🎭 Demo Mode — you're exploring a sandboxed account. Creating, editing, and deleting is disabled.
+            </div>
+        @endif
     @endauth
 
     <div class="min-h-screen flex" x-data="{ mobileSidebarOpen: false }">
@@ -62,7 +76,7 @@
         <div class="flex-1 min-w-0 flex flex-col">
             {{-- Top bar --}}
             @auth
-            <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm">
+            <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between sticky {{ $isDemoUser ? 'top-8' : 'top-0' }} z-10 shadow-sm">
                 <div class="flex items-center gap-3">
                     {{-- Mobile Menu Button --}}
                     <button
@@ -92,6 +106,9 @@
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
                         <span class="text-sm font-medium text-slate-700 hidden sm:block">{{ auth()->user()->name }}</span>
+                        @if($isDemoUser)
+                            <span class="hidden sm:inline-flex items-center rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 uppercase tracking-wide">Demo</span>
+                        @endif
                     </div>
                 </div>
             </header>
