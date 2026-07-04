@@ -77,7 +77,7 @@ Route::get('/dashboard', function () {
 // ====================== COURSES ======================
 Route::post('/paystack/webhook', [PaystackWebhookController::class, 'handle'])->name('paystack.webhook');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'block.demo.writes'])->group(function () {
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
@@ -104,7 +104,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ====================== INSTRUCTOR PANEL ======================
-Route::middleware(['auth'])
+Route::middleware(['auth', 'block.demo.writes'])
     ->prefix('instructor')
     ->name('instructor.')
     ->group(function () {
@@ -154,7 +154,7 @@ Route::middleware(['auth'])
     });
 
 // ====================== QUIZZES ======================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'block.demo.writes'])->group(function () {
     Route::get('/courses/{course}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
     Route::post('/courses/{course}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
 
@@ -201,7 +201,7 @@ Route::post('/courses/{course}/quizzes/{quiz}/toggle-publish', [QuizController::
 });
 
 // ====================== LESSONS ======================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'block.demo.writes'])->group(function () {
     Route::get('/courses/{course}/lessons/create', [LessonController::class, 'create'])
         ->name('lessons.create');
 
