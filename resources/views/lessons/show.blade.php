@@ -901,12 +901,26 @@
                                     Go to Next Lesson →
                                 </a>
                             @endif
-                        @else
+                        @elseif(!empty($lesson->video_url))
                             <div class="rounded-xl border border-blue-200 bg-blue-50 p-3 text-blue-800 text-sm">
                                 Watch this lesson video to the end. Completion and attendance will be recorded automatically.
                             </div>
                             <form id="lesson-complete-form" method="POST" action="{{ route('lessons.complete', [$course->id, $lesson->id]) }}" class="hidden">
                                 @csrf
+                            </form>
+                        @else
+                            <div class="rounded-xl border border-blue-200 bg-blue-50 p-3 text-blue-800 text-sm">
+                                This lesson has no video — mark it complete once you've finished reading the content.
+                            </div>
+                            <form method="POST" action="{{ route('lessons.complete', [$course->id, $lesson->id]) }}">
+                                @csrf
+                                <button type="submit"
+                                        class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-green-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Mark Lesson as Complete
+                                </button>
                             </form>
                         @endif
 
