@@ -71,8 +71,10 @@ class DemoDataSeeder extends Seeder
             [$module3, 'Functions & Events', 2, "Functions let you package reusable blocks of logic:\n\nfunction greet(name) {\n  return 'Hello, ' + name + '!';\n}\n\nconsole.log(greet('Mustapha')); // Hello, Mustapha!\n\nEvents let your page respond to user actions — clicks, key presses, form submissions:\n\ndocument.querySelector('button').addEventListener('click', function() {\n  alert('Button clicked!');\n});\n\nThis is the foundation of interactivity: HTML provides the structure, CSS makes it look good, and JavaScript makes it respond to the user.\n\nCongratulations — you now understand the three pillars of web development. From here, the best next step is to build small projects: a personal portfolio page, a to-do list app, or a simple calculator. Keep building, keep experimenting, and you'll grow fast."],
         ];
 
+        $demoVideoUrl = 'https://www.youtube.com/embed/OKGwQrMWIwk';
+
         $lessons = [];
-        foreach ($lessonsData as [$module, $title, $order, $content]) {
+        foreach ($lessonsData as $index => [$module, $title, $order, $content]) {
             $lessons[] = Lesson::create([
                 'course_id' => $course->id,
                 'module_id' => $module->id,
@@ -80,6 +82,7 @@ class DemoDataSeeder extends Seeder
                 'duration' => 15,
                 'content' => $content,
                 'order' => $order,
+                'video_url' => $index === 0 ? $demoVideoUrl : null,
             ]);
         }
 
