@@ -95,6 +95,7 @@ class DemoDataSeeder extends Seeder
             'pass_mark' => 60,
             'is_published' => true,
             'max_attempts' => 3,
+            'time_limit_minutes' => 5,
         ]);
 
         QuizQuestion::create([
@@ -136,6 +137,7 @@ class DemoDataSeeder extends Seeder
             'pass_mark' => 60,
             'is_published' => true,
             'max_attempts' => 3,
+            'time_limit_minutes' => 5,
         ]);
 
         $q1 = QuizQuestion::create([
