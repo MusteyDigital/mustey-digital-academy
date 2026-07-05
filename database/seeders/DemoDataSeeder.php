@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\LessonResource;
 use App\Models\LessonCompletion;
 use App\Models\Module;
 use App\Models\Payment;
@@ -85,6 +86,47 @@ class DemoDataSeeder extends Seeder
                 'video_url' => $index === 0 ? $demoVideoUrl : null,
             ]);
         }
+
+        // Quiz on Lesson 1 too, since most demo visitors only explore the first lesson
+        $quizLesson1 = Quiz::create([
+            'course_id' => $course->id,
+            'lesson_id' => $lessons[0]->id,
+            'title' => 'Web Development Basics Quiz',
+            'pass_mark' => 60,
+            'is_published' => true,
+            'max_attempts' => 3,
+        ]);
+
+        QuizQuestion::create([
+            'quiz_id' => $quizLesson1->id,
+            'question' => 'What does HTML stand for?',
+            'option_a' => 'Hyper Trainer Marking Language',
+            'option_b' => 'HyperText Markup Language',
+            'option_c' => 'HighText Machine Language',
+            'option_d' => 'Hyperlink Text Markup Language',
+            'correct_option' => 'B',
+        ]);
+
+        QuizQuestion::create([
+            'quiz_id' => $quizLesson1->id,
+            'question' => 'Which language is primarily used to style a webpage?',
+            'option_a' => 'HTML',
+            'option_b' => 'JavaScript',
+            'option_c' => 'CSS',
+            'option_d' => 'PHP',
+            'correct_option' => 'C',
+        ]);
+
+        // Downloadable resource on Lesson 1
+        LessonResource::create([
+            'lesson_id' => $lessons[0]->id,
+            'title' => 'HTML Basics — Quick Reference',
+            'file_path' => 'demo-resources/html-cheat-sheet.pdf',
+            'file_name' => 'html-cheat-sheet.pdf',
+            'file_type' => 'application/pdf',
+            'file_size' => @filesize(storage_path('app/public/demo-resources/html-cheat-sheet.pdf')) ?: 3098,
+            'download_count' => 0,
+        ]);
 
         // Quiz on the last lesson (Functions & Events) so it's the natural end of a walkthrough
         $quiz = Quiz::create([
