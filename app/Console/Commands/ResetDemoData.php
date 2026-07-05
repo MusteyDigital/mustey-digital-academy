@@ -64,18 +64,10 @@ class ResetDemoData extends Command
         QuizAttemptAnswer::whereIn('attempt_id', $attemptIds)->delete();
         QuizAttempt::whereIn('id', $attemptIds)->delete();
 
-        // Re-seed the baseline showcase state: first 4 lessons complete
+        // Reset to baseline: NO lessons pre-completed except via the demo
+        // video on Lesson 1. Lessons 2+ stay locked so visitors can
+        // experience the sequential lesson-unlock mechanic themselves.
         $lessons = $course->lessons()->orderBy('order')->orderBy('id')->get();
-
-        // Skip the first lesson (has the demo video) so it stays available
-        // to watch-and-complete live; pre-complete the next 4 instead.
-        foreach ($lessons->slice(1, 4) as $lesson) {
-            LessonCompletion::create([
-                'user_id' => $student->id,
-                'lesson_id' => $lesson->id,
-                'completed_at' => now()->subDays(rand(1, 8)),
-            ]);
-        }
 
         // Re-seed the baseline 100% quiz attempt
         $quiz = $course->quizzes()->first(); // attached to last lesson

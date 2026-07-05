@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\LessonAssignment;
 use App\Models\LessonResource;
 use App\Models\LessonCompletion;
 use App\Models\Module;
@@ -129,6 +130,16 @@ class DemoDataSeeder extends Seeder
             'download_count' => 0,
         ]);
 
+        // Assignment on Lesson 3 ("Your First HTML Page") so the demo shows
+        // off the assignment submission flow too.
+        LessonAssignment::create([
+            'lesson_id' => $lessons[2]->id,
+            'title' => 'Build Your First HTML Page',
+            'instructions' => "Create a file called index.html and build a simple personal profile page.\n\nInclude:\n1. A heading with your name\n2. A paragraph describing yourself\n3. A list of 3 skills you want to learn\n4. A link to your favorite website\n\nSave your file and upload it below once you're done.",
+            'due_at' => now()->addDays(7),
+            'max_score' => 100,
+        ]);
+
         // Quiz on the last lesson (Functions & Events) so it's the natural end of a walkthrough
         $quiz = Quiz::create([
             'course_id' => $course->id,
@@ -162,14 +173,10 @@ class DemoDataSeeder extends Seeder
 
         Enrollment::firstOrCreate(['user_id' => $student->id, 'course_id' => $course->id], ['status' => 'enrolled']);
 
-        // Skip index 0 (Lesson 1 has the demo video) so it stays available
-        // to watch-and-complete live; pre-complete lessons 2-5 instead.
-        foreach (array_slice($lessons, 1, 4) as $lesson) {
-            LessonCompletion::firstOrCreate(
-                ['user_id' => $student->id, 'lesson_id' => $lesson->id],
-                ['completed_at' => now()->subDays(rand(1, 8))]
-            );
-        }
+        // Only Lesson 1 is left completable live (via the demo video).
+        // Lessons 2+ stay locked/incomplete by default so a demo visitor can
+        // see and experience the sequential lesson-unlock mechanic themselves.
+        // (No pre-completions here on purpose.)
 
         $attempt = QuizAttempt::create([
             'quiz_id' => $quiz->id,
