@@ -118,7 +118,9 @@ class DemoDataSeeder extends Seeder
 
         Enrollment::firstOrCreate(['user_id' => $student->id, 'course_id' => $course->id], ['status' => 'enrolled']);
 
-        foreach (array_slice($lessons, 0, 4) as $lesson) {
+        // Skip index 0 (Lesson 1 has the demo video) so it stays available
+        // to watch-and-complete live; pre-complete lessons 2-5 instead.
+        foreach (array_slice($lessons, 1, 4) as $lesson) {
             LessonCompletion::firstOrCreate(
                 ['user_id' => $student->id, 'lesson_id' => $lesson->id],
                 ['completed_at' => now()->subDays(rand(1, 8))]

@@ -67,7 +67,9 @@ class ResetDemoData extends Command
         // Re-seed the baseline showcase state: first 4 lessons complete
         $lessons = $course->lessons()->orderBy('order')->orderBy('id')->get();
 
-        foreach ($lessons->take(4) as $lesson) {
+        // Skip the first lesson (has the demo video) so it stays available
+        // to watch-and-complete live; pre-complete the next 4 instead.
+        foreach ($lessons->slice(1, 4) as $lesson) {
             LessonCompletion::create([
                 'user_id' => $student->id,
                 'lesson_id' => $lesson->id,
