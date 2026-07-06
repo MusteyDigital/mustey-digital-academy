@@ -558,7 +558,7 @@
                         @auth
                             <form method="POST" action="{{ route('lessons.discussion.store', [$course->id, $lesson->id]) }}" class="space-y-4 rounded-2xl border border-primary-100 bg-primary-50/40 p-6">
                                 @csrf
-                                <input type="hidden" name="parent_id" id="parent_id" value="">
+                                <input type="hidden" name="parent_id" id="parent_id" value="{{ request('reply_to') }}">
                                 @if(request('reply_to'))
                                     @php
                                         $replyTarget = $lessonComments->firstWhere('id', (int) request('reply_to'));
