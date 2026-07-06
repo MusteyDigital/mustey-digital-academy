@@ -627,26 +627,6 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-
-
-
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| Lesson Comments (FINAL FIX)
-|--------------------------------------------------------------------------
-*/
-
-Route::post('/courses/{course}/lessons/{lesson}/comments', [\App\Http\Controllers\LessonCommentController::class, 'store'])
-    ->name('lessons.comments.store');
-
-Route::delete('/courses/{course}/lessons/{lesson}/comments/{comment}', [\App\Http\Controllers\LessonCommentController::class, 'destroy'])
-    ->name('lessons.comments.destroy');
-
-
 // Demo login routes
 use App\Http\Controllers\DemoController;
 Route::get('/demo/student',    [DemoController::class, 'loginAsStudent'])->name('demo.student');
