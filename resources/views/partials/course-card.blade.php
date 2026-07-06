@@ -7,7 +7,7 @@
         @if($thumbUrl)
             <img src="{{ $thumbUrl }}" alt="{{ $course->title }}" class="h-full w-full object-cover">
         @else
-            <div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+            <div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary-500 to-accent-600 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
@@ -27,13 +27,13 @@
     <div class="p-6">
         <div class="flex flex-wrap gap-2 text-xs">
             @if($course->category)
-                <span class="rounded-full bg-blue-50 text-blue-700 px-2.5 py-1 font-medium">{{ $course->category }}</span>
+                <x-badge variant="primary">{{ $course->category }}</x-badge>
             @endif
             @if($course->level)
-                <span class="rounded-full bg-slate-100 text-slate-600 px-2.5 py-1 font-medium">{{ $course->level }}</span>
+                <x-badge variant="neutral">{{ $course->level }}</x-badge>
             @endif
             @if($course->duration)
-                <span class="rounded-full bg-slate-100 text-slate-600 px-2.5 py-1 font-medium">{{ $course->duration }}</span>
+                <x-badge variant="neutral">{{ $course->duration }}</x-badge>
             @endif
         </div>
 
@@ -44,7 +44,7 @@
 
         <div class="mt-5 flex items-center justify-between gap-3">
             <a href="{{ url('/courses/'.$course->id) }}"
-               class="inline-flex items-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition">
+               class="inline-flex items-center rounded-xl bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 transition">
                 View
             </a>
 
