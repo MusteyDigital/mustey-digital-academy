@@ -122,15 +122,15 @@
 
     {{-- Session / Error Alerts --}}
     @if(session('success'))
-        <div class="rounded-2xl border border-green-200 bg-green-50 p-4">
+        <div class="rounded-2xl border border-success-200 bg-success-50 p-4">
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div>
-                    <div class="font-semibold text-green-800">✅ {{ session('success') }}</div>
-                    <div class="text-sm text-green-700 mt-1">Your progress or lesson action has been updated successfully.</div>
+                    <div class="font-semibold text-success-800">✅ {{ session('success') }}</div>
+                    <div class="text-sm text-success-700 mt-1">Your progress or lesson action has been updated successfully.</div>
                 </div>
                 @if($nextLesson)
                     <a href="{{ route('lessons.show', [$course->id, $nextLesson->id]) }}"
-                       class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm rounded-xl font-medium hover:bg-green-700 transition">
+                       class="inline-flex items-center px-4 py-2 bg-success-600 text-white text-sm rounded-xl font-medium hover:bg-success-700 transition">
                         Continue to Next Lesson →
                     </a>
                 @endif
@@ -139,13 +139,13 @@
     @endif
 
     @if(session('error'))
-        <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-800 text-sm">
+        <div class="rounded-2xl border border-danger-200 bg-danger-50 p-4 text-danger-800 text-sm">
             {{ session('error') }}
         </div>
     @endif
 
     @if($errors->any())
-        <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-800">
+        <div class="rounded-2xl border border-danger-200 bg-danger-50 p-4 text-danger-800">
             <ul class="list-disc pl-5 text-sm space-y-1">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -173,7 +173,7 @@
 
                 @if(!empty($lesson->video_url))
                     @if($resumeSeconds > 5 && !($isCompleted ?? false))
-                        <div class="rounded-xl border border-blue-200 bg-blue-50 p-3 text-blue-800 text-sm">
+                        <div class="rounded-xl border border-primary-200 bg-primary-50 p-3 text-primary-800 text-sm">
                             Resume available: this lesson should continue from around {{ gmdate('i:s', $resumeSeconds) }}.
                         </div>
                     @endif
@@ -237,7 +237,7 @@
                         <div class="font-semibold text-slate-800">{{ $assignment->title }}</div>
 
                         @if($assignment->due_at)
-                            <div class="mt-2 text-sm text-red-600 font-medium">⏰ Due: {{ $assignment->due_at->format('M j, Y g:i A') }}</div>
+                            <div class="mt-2 text-sm text-danger-600 font-medium">⏰ Due: {{ $assignment->due_at->format('M j, Y g:i A') }}</div>
                         @endif
 
                         @if($assignment->instructions)
@@ -254,7 +254,7 @@
                         @if($assignment->attachment_path)
                             <div class="mt-4">
                                 <a href="{{ route('assignments.attachment.download', [$course->id, $lesson->id]) }}"
-                                   class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm rounded-xl font-medium hover:bg-indigo-700 transition">
+                                   class="inline-flex items-center px-4 py-2 bg-accent-600 text-white text-sm rounded-xl font-medium hover:bg-accent-700 transition">
                                     Download Assignment File
                                 </a>
                                 @if($assignment->attachment_name)
@@ -295,14 +295,14 @@
 
                     @if(auth()->check() && auth()->user()->role === 'student')
                         @if($studentSubmission)
-                            <div class="rounded-xl border border-green-200 bg-green-50 p-4 text-green-800">
+                            <div class="rounded-xl border border-success-200 bg-success-50 p-4 text-success-800">
                                 <div class="font-semibold">✅ Assignment Submitted</div>
                                 <div class="text-sm mt-1">
                                     Submitted {{ $studentSubmission->submitted_at ? $studentSubmission->submitted_at->format('M j, Y g:i A') : '' }}
                                 </div>
                                 <div class="mt-3 flex flex-wrap gap-3">
                                     <a href="{{ route('assignments.download', [$course->id, $lesson->id, $studentSubmission->id]) }}"
-                                       class="inline-flex items-center px-4 py-2 border border-green-300 rounded-xl text-sm text-green-800 hover:bg-white transition">
+                                       class="inline-flex items-center px-4 py-2 border border-success-300 rounded-xl text-sm text-success-800 hover:bg-white transition">
                                         Download My Submission
                                     </a>
                                 </div>
@@ -316,7 +316,7 @@
                         @endif
 
                         <details>
-                            <summary class="cursor-pointer text-sm text-blue-600 hover:underline list-none font-medium">
+                            <summary class="cursor-pointer text-sm text-primary-600 hover:underline list-none font-medium">
                                 {{ $studentSubmission ? 'Resubmit Assignment' : 'Submit Assignment' }}
                             </summary>
 
@@ -331,19 +331,19 @@
                                     <div class="border-2 border-dashed border-slate-200 rounded-xl p-6 bg-slate-50">
                                         <label class="block text-sm font-semibold text-slate-700 mb-2">Upload Assignment File</label>
                                         <input type="file" name="submission_file" required
-                                               class="block w-full text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                               class="block w-full text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
                                         <p class="text-xs text-slate-500 mt-2">Maximum file size: 20MB</p>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-slate-700 mb-1">Student Note</label>
                                         <textarea name="student_note" rows="4"
-                                                  class="w-full rounded-xl border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                                                  class="w-full rounded-xl border-slate-300 focus:border-primary-500 focus:ring-primary-500"
                                                   placeholder="Optional note for your instructor...">{{ old('student_note', $studentSubmission->student_note ?? '') }}</textarea>
                                     </div>
 
                                     <button type="submit"
-                                            class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-blue-700">
+                                            class="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-primary-700">
                                         {{ $studentSubmission ? 'Resubmit Assignment' : 'Submit Assignment' }}
                                     </button>
                                 </form>
@@ -368,7 +368,7 @@
                                 <div>
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <div class="font-semibold text-slate-800">{{ $resource->title }}</div>
-                                        <span class="inline-flex items-center rounded-full bg-blue-50 border border-blue-200 px-2 py-0.5 text-xs text-blue-700">
+                                        <span class="inline-flex items-center rounded-full bg-primary-50 border border-primary-200 px-2 py-0.5 text-xs text-primary-700">
                                             {{ $resource->simple_type }}
                                         </span>
                                     </div>
@@ -477,7 +477,7 @@
 
                                     <div class="flex flex-wrap gap-2">
                                         <a href="{{ route('quizzes.show', [$course->id, $lessonQuiz->id]) }}"
-                                           class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded-xl font-medium shadow-sm transition hover:bg-blue-700">
+                                           class="inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm rounded-xl font-medium shadow-sm transition hover:bg-primary-700">
                                             {{ auth()->check() && auth()->user()->role === 'student' ? 'Take Quiz' : 'Open Quiz' }}
                                         </a>
 
@@ -492,7 +492,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                        class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm rounded-xl hover:bg-red-700 transition">
+                                                        class="inline-flex items-center px-4 py-2 bg-danger-600 text-white text-sm rounded-xl hover:bg-danger-700 transition">
                                                     Delete
                                                 </button>
                                             </form>
@@ -511,8 +511,8 @@
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
                             <h3 class="font-bold text-xl text-white">🧠 MDA Logic Benchmark</h3>
-                            <p class="text-sm mt-2 text-indigo-100">This is where you train how to think like a data analyst.</p>
-                            <div class="mt-3 text-sm text-indigo-100 space-y-1">
+                            <p class="text-sm mt-2 text-accent-100">This is where you train how to think like a data analyst.</p>
+                            <div class="mt-3 text-sm text-accent-100 space-y-1">
                                 <div>• Apply real-world logic</div>
                                 <div>• Improve speed & accuracy</div>
                                 <div>• Unlock higher reasoning levels</div>
@@ -524,10 +524,10 @@
                         </div>
                         <div class="text-right shrink-0">
                             <a href="{{ route('drab.index', $lesson->id) }}"
-                               class="inline-flex items-center px-5 py-3 rounded-xl font-bold text-sm bg-white text-indigo-700 shadow hover:bg-indigo-50 transition">
+                               class="inline-flex items-center px-5 py-3 rounded-xl font-bold text-sm bg-white text-accent-700 shadow hover:bg-accent-50 transition">
                                 🚀 Start Benchmark
                             </a>
-                            <div class="text-xs text-indigo-100 mt-2">~2 mins per session</div>
+                            <div class="text-xs text-accent-100 mt-2">~2 mins per session</div>
                         </div>
                     </div>
                 </div>
@@ -550,36 +550,36 @@
 
                     <div class="mt-5 space-y-5">
                         @if(session('success'))
-                            <div class="rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800 text-sm">
+                            <div class="rounded-2xl border border-success-200 bg-success-50 p-4 text-success-800 text-sm">
                                 {{ session('success') }}
                             </div>
                         @endif
 
                         @auth
-                            <form method="POST" action="{{ route('lessons.discussion.store', [$course->id, $lesson->id]) }}" class="space-y-4 rounded-2xl border border-blue-100 bg-blue-50/40 p-6">
+                            <form method="POST" action="{{ route('lessons.discussion.store', [$course->id, $lesson->id]) }}" class="space-y-4 rounded-2xl border border-primary-100 bg-primary-50/40 p-6">
                                 @csrf
                                 <input type="hidden" name="parent_id" id="parent_id" value="">
                                 @if(request('reply_to'))
                                     @php
                                         $replyTarget = $lessonComments->firstWhere('id', (int) request('reply_to'));
                                     @endphp
-                                    <div class="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-700">
+                                    <div class="rounded-xl border border-primary-200 bg-primary-50 px-3 py-2 text-sm text-primary-700">
                                         Reply thread: {{ optional(optional($replyTarget)->user)->name ?? 'this comment' }}
                                         <a href="{{ route('lessons.show', [$course->id, $lesson->id]) }}#lesson-discussion" class="ml-2 underline">Cancel</a>
                                     </div>
                                 @endif
 
-                                <div id="replyingToLabel" class="hidden rounded-xl border border-blue-300 bg-blue-100 px-4 py-3 text-sm font-semibold text-blue-800"></div>
+                                <div id="replyingToLabel" class="hidden rounded-xl border border-primary-300 bg-primary-100 px-4 py-3 text-sm font-semibold text-primary-800"></div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-2">Join the discussion</label>
                                     <textarea name="body" rows="4" required
-                                              class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                              class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-primary-500 focus:ring-primary-500"
                                               placeholder="Write a comment or question...">{{ old('body') }}</textarea>
                                 </div>
 
                                 <button type="submit"
-                                        class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-blue-700">
+                                        class="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-primary-700">
                                     Post Comment
                                 </button>
                             </form>
@@ -605,9 +605,9 @@
                                     @endphp
 
                                     <div id="comment-{{ $comment->id }}"
-                                         class="comment-item rounded-2xl p-5 border transition {{ $commentRole === 'instructor' ? 'border-l-4 border-blue-500 bg-blue-50' : 'border-slate-200 bg-white' }}">
+                                         class="comment-item rounded-2xl p-5 border transition {{ $commentRole === 'instructor' ? 'border-l-4 border-primary-500 bg-primary-50' : 'border-slate-200 bg-white' }}">
                                         <div class="flex items-start gap-3 flex-wrap">
-                                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-200 text-blue-800 flex items-center justify-center font-bold text-sm shrink-0">
+                                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-accent-200 text-primary-800 flex items-center justify-center font-bold text-sm shrink-0">
                                                 {{ $commentInitials }}
                                             </div>
 
@@ -641,13 +641,13 @@
                                                         <summary class="cursor-pointer list-none mb-2">
                                                             <x-badge variant="primary" border>{{ $comment->replies->count() }} {{ $comment->replies->count() === 1 ? 'Reply' : 'Replies' }}</x-badge>
                                                         </summary>
-                                                        <div class="mt-3 space-y-3 border-l-2 border-blue-200 pl-4">
+                                                        <div class="mt-3 space-y-3 border-l-2 border-primary-200 pl-4">
                                                             @foreach($comment->replies as $reply)
                                                                 @php
                                                                     $replyUser = optional($reply->user);
                                                                     $replyName = $replyUser->name ?? 'User';
                                                                 @endphp
-                                                                <div class="rounded-xl border border-blue-100 bg-blue-50/60 p-4">
+                                                                <div class="rounded-xl border border-primary-100 bg-primary-50/60 p-4">
                                                                     <div class="text-sm font-semibold text-slate-800">{{ $replyName }}</div>
                                                                     <div class="text-xs text-slate-500 mb-1">{{ $reply->created_at?->diffForHumans() }}</div>
                                                                     <div class="text-sm text-slate-700 whitespace-pre-line">{{ $reply->body }}</div>
@@ -661,13 +661,13 @@
                                                     @if(auth()->check() && in_array(auth()->user()->role, ['instructor', 'admin']))
                                                         <form method="POST" action="{{ route('lessons.discussion.pin', [$course->id, $lesson->id, $comment->id]) }}">
                                                             @csrf
-                                                            <button class="inline-flex items-center rounded-xl bg-amber-100 text-amber-900 border border-amber-200 px-3 py-1.5 hover:bg-amber-200 transition">
+                                                            <button class="inline-flex items-center rounded-xl bg-warning-100 text-warning-900 border border-warning-200 px-3 py-1.5 hover:bg-warning-200 transition">
                                                                 {{ $comment->is_pinned ? 'Unpin' : 'Pin' }}
                                                             </button>
                                                         </form>
                                                         <form method="POST" action="{{ route('lessons.discussion.mark-answer', [$course->id, $lesson->id, $comment->id]) }}">
                                                             @csrf
-                                                            <button class="inline-flex items-center rounded-xl bg-green-100 text-green-900 border border-green-200 px-3 py-1.5 hover:bg-green-200 transition">
+                                                            <button class="inline-flex items-center rounded-xl bg-success-100 text-success-900 border border-success-200 px-3 py-1.5 hover:bg-success-200 transition">
                                                                 {{ $comment->is_answer ? 'Unmark Answer' : 'Mark Answer' }}
                                                             </button>
                                                         </form>
@@ -675,7 +675,7 @@
 
                                                     <a href="{{ route('lessons.show', [$course->id, $lesson->id]) }}?reply_to={{ $comment->id }}#lesson-discussion"
                                                        onclick="replyToComment({{ $comment->id }}, '{{ addslashes($commentName) }}'); return true;"
-                                                       class="inline-flex items-center rounded-xl bg-blue-600 text-white px-3 py-1.5 hover:bg-blue-700 transition">
+                                                       class="inline-flex items-center rounded-xl bg-primary-600 text-white px-3 py-1.5 hover:bg-primary-700 transition">
                                                         Reply
                                                     </a>
 
@@ -684,7 +684,7 @@
                                                               onsubmit="return confirm('Delete this comment?')">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 hover:bg-red-100 transition">
+                                                            <button class="inline-flex items-center rounded-full bg-danger-50 text-danger-700 border border-danger-200 px-3 py-1 hover:bg-danger-100 transition">
                                                                 Delete
                                                             </button>
                                                         </form>
@@ -713,19 +713,19 @@
                     </div>
 
                     <details>
-                        <summary class="cursor-pointer text-sm text-blue-600 hover:underline list-none font-medium">Show Notes</summary>
+                        <summary class="cursor-pointer text-sm text-primary-600 hover:underline list-none font-medium">Show Notes</summary>
 
                         <div class="mt-4">
                             <form method="POST" action="{{ route('lessons.notes.store', [$course->id, $lesson->id]) }}" class="space-y-4">
                                 @csrf
                                 <textarea name="note" rows="8"
-                                          class="w-full rounded-xl border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                                          class="w-full rounded-xl border-slate-300 focus:border-primary-500 focus:ring-primary-500"
                                           placeholder="Write your lesson notes here...">{{ old('note', $studentNote->note ?? '') }}</textarea>
 
                                 <div class="flex items-center justify-between flex-wrap gap-3">
                                     <p class="text-xs text-slate-500">Your notes are private and only visible to you.</p>
                                     <button type="submit"
-                                            class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-blue-700">
+                                            class="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-primary-700">
                                         Save Notes
                                     </button>
                                 </div>
@@ -749,7 +749,7 @@
                     <div>
                         @if($nextLesson)
                             <a href="{{ route('lessons.show', [$course->id, $nextLesson->id]) }}"
-                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded-xl font-medium shadow-sm transition hover:bg-blue-700">
+                               class="inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm rounded-xl font-medium shadow-sm transition hover:bg-primary-700">
                                 Next Lesson →
                             </a>
                         @endif
@@ -771,7 +771,7 @@
                         </div>
 
                         <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                            <div class="bg-green-600 h-2.5 rounded-full" style="width: {{ $progressPercent ?? 0 }}%;"></div>
+                            <div class="bg-success-600 h-2.5 rounded-full" style="width: {{ $progressPercent ?? 0 }}%;"></div>
                         </div>
 
                         <div class="text-sm text-slate-600 space-y-1">
@@ -792,11 +792,11 @@
                                 <p class="text-sm text-slate-500 mt-0.5">Create, update, and manage this lesson assignment.</p>
                             </div>
                             @if($assignment)
-                                <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
+                                <span class="inline-flex items-center rounded-full bg-success-50 text-success-700 border border-success-200 px-3 py-1 text-xs font-semibold">
                                     Active Assignment
                                 </span>
                             @else
-                                <span class="inline-flex items-center rounded-full bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 text-xs font-semibold">
+                                <span class="inline-flex items-center rounded-full bg-warning-50 text-warning-700 border border-warning-200 px-3 py-1 text-xs font-semibold">
                                     No Assignment Yet
                                 </span>
                             @endif
@@ -808,14 +808,14 @@
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Assignment Title</label>
                                 <input type="text" name="title" value="{{ old('title', $assignment->title ?? '') }}" required
-                                       class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                       class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-primary-500 focus:ring-primary-500"
                                        placeholder="e.g. Excel Sales Analysis Assignment">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Instructions</label>
                                 <textarea name="instructions" rows="6"
-                                          class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                          class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-primary-500 focus:ring-primary-500"
                                           placeholder="Write assignment instructions...">{{ old('instructions', $assignment->instructions ?? '') }}</textarea>
                             </div>
 
@@ -824,20 +824,20 @@
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
                                     <input type="datetime-local" name="due_at"
                                            value="{{ old('due_at', isset($assignment) && $assignment->due_at ? $assignment->due_at->format('Y-m-d\TH:i') : '') }}"
-                                           class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                           class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-primary-500 focus:ring-primary-500">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Max Score</label>
                                     <input type="number" name="max_score" min="1" max="1000"
                                            value="{{ old('max_score', $assignment->max_score ?? 100) }}"
-                                           class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                           class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-primary-500 focus:ring-primary-500">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Assignment File</label>
                                 <input type="file" name="assignment_file"
-                                       class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                       class="w-full rounded-xl border-slate-300 bg-white shadow-sm focus:border-primary-500 focus:ring-primary-500">
                                 <p class="text-xs text-slate-500 mt-1">Optional. Upload dataset, PDF brief, Word file, CSV, or reference material (max 20MB).</p>
                                 @if($assignment && $assignment->attachment_name)
                                     <div class="mt-2 text-sm text-slate-600">Current file: <span class="font-medium">{{ $assignment->attachment_name }}</span></div>
@@ -857,7 +857,7 @@
                             @endif
 
                             <button type="submit"
-                                    class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-blue-700">
+                                    class="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-primary-700">
                                 {{ $assignment ? 'Update Assignment' : 'Create Assignment' }}
                             </button>
                         </form>
@@ -870,7 +870,7 @@
                                 </a>
                             @endif
                             <a href="{{ route('attendance.index', [$course->id, $lesson->id]) }}"
-                               class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm rounded-xl hover:bg-indigo-700 transition">
+                               class="inline-flex items-center px-4 py-2 bg-accent-600 text-white text-sm rounded-xl hover:bg-accent-700 transition">
                                 View Attendance List
                             </a>
                         </div>
@@ -882,30 +882,30 @@
                         <h3 class="font-bold text-slate-800 text-lg">Student Actions</h3>
 
                         @if($isCompleted ?? false)
-                            <div class="rounded-xl border border-green-200 bg-green-50 p-3 text-green-800 font-semibold text-sm">
+                            <div class="rounded-xl border border-success-200 bg-success-50 p-3 text-success-800 font-semibold text-sm">
                                 ✅ Lesson Completed
                             </div>
                             @if($nextLesson)
                                 <a href="{{ route('lessons.show', [$course->id, $nextLesson->id]) }}"
-                                   class="inline-flex items-center justify-center w-full px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-blue-700">
+                                   class="inline-flex items-center justify-center w-full px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-primary-700">
                                     Go to Next Lesson →
                                 </a>
                             @endif
                         @elseif(!empty($lesson->video_url))
-                            <div class="rounded-xl border border-blue-200 bg-blue-50 p-3 text-blue-800 text-sm">
+                            <div class="rounded-xl border border-primary-200 bg-primary-50 p-3 text-primary-800 text-sm">
                                 Watch this lesson video to the end. Completion and attendance will be recorded automatically.
                             </div>
                             <form id="lesson-complete-form" method="POST" action="{{ route('lessons.complete', [$course->id, $lesson->id]) }}" class="hidden">
                                 @csrf
                             </form>
                         @else
-                            <div class="rounded-xl border border-blue-200 bg-blue-50 p-3 text-blue-800 text-sm">
+                            <div class="rounded-xl border border-primary-200 bg-primary-50 p-3 text-primary-800 text-sm">
                                 This lesson has no video — mark it complete once you've finished reading the content.
                             </div>
                             <form method="POST" action="{{ route('lessons.complete', [$course->id, $lesson->id]) }}">
                                 @csrf
                                 <button type="submit"
-                                        class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-green-700">
+                                        class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-success-600 text-white text-sm font-medium rounded-xl shadow-sm transition hover:bg-success-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
@@ -1040,12 +1040,12 @@ function replyToComment(commentId, name) {
     if (textarea) textarea.focus();
 
     document.querySelectorAll('.comment-item').forEach(el => {
-        el.classList.remove('ring-2', 'ring-blue-400');
+        el.classList.remove('ring-2', 'ring-primary-400');
     });
 
     const target = document.getElementById('comment-' + commentId);
     if (target) {
-        target.classList.add('ring-2', 'ring-blue-400');
+        target.classList.add('ring-2', 'ring-primary-400');
     }
 
     const anchor = document.getElementById('lesson-discussion');
