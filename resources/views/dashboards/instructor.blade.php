@@ -28,41 +28,21 @@
 
             {{-- Top stats --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
-                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                    </div>
-                    <div class="text-sm text-slate-500">Total Courses</div>
-                    <div class="text-2xl font-bold text-slate-900 mt-0.5">{{ $courses->count() }}</div>
-                </div>
-                <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
-                    <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
-                    </div>
-                    <div class="text-sm text-slate-500">Total Modules</div>
-                    <div class="text-2xl font-bold text-slate-900 mt-0.5">{{ $courses->sum('modules_count') }}</div>
-                </div>
-                <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
-                    <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                    </div>
-                    <div class="text-sm text-slate-500">Total Lessons</div>
-                    <div class="text-2xl font-bold text-slate-900 mt-0.5">{{ $courses->sum('lessons_count') }}</div>
-                </div>
-                <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
-                    <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4"/></svg>
-                    </div>
-                    <div class="text-sm text-slate-500">Paid Enrollments</div>
-                    <div class="text-2xl font-bold text-slate-900 mt-0.5">{{ $totalPaidEnrollments ?? 0 }}</div>
-                </div>
-                <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
-                    <div class="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center mb-3">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 10v-2m0-8c-1.11 0-2.08.402-2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <div class="text-sm text-slate-500">Total Revenue</div>
-                    <div class="text-2xl font-bold text-slate-900 mt-0.5">₦{{ number_format($totalRevenue ?? 0) }}</div>
-                </div>
+                <x-stat-card label="Total Courses" :value="$courses->count()" color="primary">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                </x-stat-card>
+                <x-stat-card label="Total Modules" :value="$courses->sum('modules_count')" color="accent">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                </x-stat-card>
+                <x-stat-card label="Total Lessons" :value="$courses->sum('lessons_count')" color="purple">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </x-stat-card>
+                <x-stat-card label="Paid Enrollments" :value="$totalPaidEnrollments ?? 0" color="warning">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4"/></svg>
+                </x-stat-card>
+                <x-stat-card label="Total Revenue" value="₦{{ number_format($totalRevenue ?? 0) }}" color="success">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 10v-2m0-8c-1.11 0-2.08.402-2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </x-stat-card>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
