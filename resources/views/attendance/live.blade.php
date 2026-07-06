@@ -21,9 +21,7 @@
                 <h3 class="font-semibold text-slate-800 text-lg">Live Attendance List</h3>
 
                 @if($attendances->isEmpty())
-                    <div class="rounded-xl border border-dashed border-slate-200 p-8 bg-slate-50 text-slate-500 text-center text-sm">
-                        No live attendance records yet.
-                    </div>
+                    <x-empty-state icon="📋" title="No live attendance records yet" />
                 @else
                     <div class="overflow-x-auto rounded-xl border border-slate-200">
                         <table class="min-w-full">
@@ -41,10 +39,9 @@
                                         <td class="px-4 py-3 text-sm text-slate-500">{{ $i + 1 }}</td>
                                         <td class="px-4 py-3 text-sm text-slate-900 font-medium">{{ $a->user->name ?? 'Unknown' }}</td>
                                         <td class="px-4 py-3 text-sm">
-                                            <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
-                                                {{ strtolower($a->status) === 'present' ? 'bg-green-50 text-green-700' : (strtolower($a->status) === 'absent' ? 'bg-red-50 text-red-700' : 'bg-slate-100 text-slate-700') }}">
+                                            <x-badge :variant="strtolower($a->status) === 'present' ? 'success' : (strtolower($a->status) === 'absent' ? 'danger' : 'neutral')">
                                                 {{ $a->status }}
-                                            </span>
+                                            </x-badge>
                                         </td>
                                         <td class="px-4 py-3 text-sm text-slate-500">
                                             {{ $a->marked_at ? \Illuminate\Support\Carbon::parse($a->marked_at)->format('D, M j, Y g:i A') : '-' }}
