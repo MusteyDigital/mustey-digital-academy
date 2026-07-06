@@ -5,18 +5,18 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class CommentReplyNotification extends Notification
+class AnswerMarkedNotification extends Notification
 {
     use Queueable;
 
     public $comment;
-    public $replierName;
+    public $lessonTitle;
     public $url;
 
-    public function __construct($comment, string $replierName, string $url)
+    public function __construct($comment, string $lessonTitle, string $url)
     {
         $this->comment = $comment;
-        $this->replierName = $replierName;
+        $this->lessonTitle = $lessonTitle;
         $this->url = $url;
     }
 
@@ -27,10 +27,8 @@ class CommentReplyNotification extends Notification
 
     public function toArray($notifiable)
     {
-        $snippet = \Illuminate\Support\Str::limit($this->comment->body, 80);
-
         return [
-            'message' => "{$this->replierName} replied to your comment: \"{$snippet}\"",
+            'message' => "Your question was marked as the answer in \"{$this->lessonTitle}\"",
             'comment_id' => $this->comment->id,
             'url' => $this->url,
         ];

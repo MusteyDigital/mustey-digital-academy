@@ -20,9 +20,15 @@
                     <div class="border-b border-slate-100 py-4 flex justify-between items-start gap-3 last:border-b-0">
 
                         <div>
-                            <p class="font-medium text-slate-900">
-                                {{ $n->data['message'] ?? 'Notification' }}
-                            </p>
+                            @if(!empty($n->data['url']))
+                                <a href="{{ $n->data['url'] }}" class="font-medium text-slate-900 hover:text-blue-600 hover:underline transition">
+                                    {{ $n->data['message'] ?? 'Notification' }}
+                                </a>
+                            @else
+                                <p class="font-medium text-slate-900">
+                                    {{ $n->data['message'] ?? 'Notification' }}
+                                </p>
+                            @endif
 
                             <p class="text-xs text-slate-500 mt-1">
                                 {{ $n->created_at->diffForHumans() }}

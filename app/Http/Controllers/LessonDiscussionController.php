@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\LessonDiscussionMessage;
+use App\Notifications\AnswerMarkedNotification;
+use App\Notifications\CommentReplyNotification;
 use Illuminate\Http\Request;
 
 class LessonDiscussionController extends Controller
@@ -35,19 +37,27 @@ class LessonDiscussionController extends Controller
             'parent_id' => ['nullable', 'integer', 'exists:lesson_discussion_messages,id'],
         ]);
 
+        $parent = null;
+
         if (!empty($data['parent_id'])) {
             $parent = LessonDiscussionMessage::findOrFail($data['parent_id']);
 
             abort_unless($parent->lesson_id === $lesson->id, 422);
         }
 
-        LessonDiscussionMessage::create([
+        $comment = LessonDiscussionMessage::create([
             'lesson_id' => $lesson->id,
             'course_id' => $course->id,
             'user_id' => $user->id,
             'parent_id' => $data['parent_id'] ?? null,
             'body' => $data['body'],
         ]);
+
+        if ($parent && $parent->user_id !== $user->id && $parent->user) {
+            $url = route('lessons.show', [$course->id, $lesson->id]) . '#comment-' . $parent->id;
+
+            $parent->user->notify(new CommentReplyNotification($comment, $user->name, $url));
+        }
 
         return back()->with('success', 'Discussion posted.');
     }
@@ -108,6 +118,12 @@ class LessonDiscussionController extends Controller
         $message->update([
             'is_answer' => true,
         ]);
+
+        if ($message->user_id !== $user->id && $message->user) {
+            $url = route('lessons.show', [$course->id, $lesson->id]) . '#comment-' . $message->id;
+
+            $message->user->notify(new AnswerMarkedNotification($message, $lesson->title, $url));
+        }
 
         return back()->with('success', 'Answer marked.');
     }
