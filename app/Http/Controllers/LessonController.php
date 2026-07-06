@@ -98,8 +98,11 @@ class LessonController extends Controller
 
         $orderedLessons = $course->lessons()
             ->with('module')
-            ->orderBy('order')
-            ->orderBy('id')
+            ->join('modules', 'lessons.module_id', '=', 'modules.id')
+            ->orderBy('modules.order')
+            ->orderBy('lessons.order')
+            ->orderBy('lessons.id')
+            ->select('lessons.*')
             ->get();
 
         $lessonIds = $orderedLessons->pluck('id')->values()->all();
@@ -255,8 +258,11 @@ class LessonController extends Controller
         );
 
         $orderedLessons = $course->lessons()
-            ->orderBy('order')
-            ->orderBy('id')
+            ->join('modules', 'lessons.module_id', '=', 'modules.id')
+            ->orderBy('modules.order')
+            ->orderBy('lessons.order')
+            ->orderBy('lessons.id')
+            ->select('lessons.*')
             ->get();
 
         $lessonIds = $orderedLessons->pluck('id')->values();
