@@ -15,12 +15,19 @@ class Coupon extends Model
         'value',
         'is_active',
         'expires_at',
+        'max_uses',
+        'per_user_limit',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'expires_at' => 'datetime',
     ];
+
+    public function redemptions()
+    {
+        return $this->hasMany(CouponRedemption::class);
+    }
 
     public function isValid(): bool
     {
@@ -32,7 +39,22 @@ class Coupon extends Model
             return false;
         }
 
+        if ($this->max_uses !== null && $this->redemptions()->count() >= $this->max_uses) {
+            return false;
+        }
+
         return true;
+    }
+
+    public function hasUserRedeemed(User $user): bool
+    {
+        if ($this->per_user_limit === null) {
+            return false;
+        }
+
+        $userRedemptions = $this->redemptions()->where('user_id', $user->id)->count();
+
+        return $userRedemptions >= $this->per_user_limit;
     }
 
     public function discountAmount(int $amount): int

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Coupon;
+use App\Models\CouponRedemption;
 use App\Models\Enrollment;
 use App\Models\Payment;
 use App\Mail\PaymentReceiptMail;
@@ -57,6 +58,11 @@ class PaymentController extends Controller
                     ->with('error', 'Invalid or expired coupon code.');
             }
 
+            if ($coupon->hasUserRedeemed($user)) {
+                return redirect()->route('courses.show', $course->id)
+                    ->with('error', 'You have already used this coupon.');
+            }
+
             $discountAmount = $coupon->discountAmount($originalAmount);
             $finalAmount = max(0, $originalAmount - $discountAmount);
         }
@@ -67,13 +73,21 @@ class PaymentController extends Controller
                 ['status' => 'enrolled']
             );
 
+            if ($coupon) {
+                CouponRedemption::create([
+                    'coupon_id' => $coupon->id,
+                    'user_id' => $user->id,
+                    'payment_id' => null,
+                ]);
+            }
+
             return redirect()->route('courses.show', $course->id)
                 ->with('success', 'Coupon applied successfully. Enrollment activated.');
         }
 
         $reference = 'MDA-' . $course->id . '-' . $user->id . '-' . Str::upper(Str::random(10));
 
-        Payment::updateOrCreate(
+        $payment = Payment::updateOrCreate(
             ['reference' => $reference],
             [
                 'user_id' => $user->id,
@@ -89,6 +103,14 @@ class PaymentController extends Controller
                 ],
             ]
         );
+
+        if ($coupon) {
+            CouponRedemption::create([
+                'coupon_id' => $coupon->id,
+                'user_id' => $user->id,
+                'payment_id' => $payment->id,
+            ]);
+        }
 
         $response = Http::withToken(env('PAYSTACK_SECRET_KEY'))
             ->acceptJson()
