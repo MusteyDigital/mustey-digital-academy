@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'block.demo.writes' => \App\Http\Middleware\BlockDemoWrites::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'paystack/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
