@@ -11,7 +11,7 @@
                 @auth
                     @if(in_array(auth()->user()->role, ['instructor','admin']))
                         <a href="{{ route('courses.create') }}"
-                           class="inline-flex items-center gap-2 rounded-xl bg-blue-600 text-white px-4 py-2.5 text-sm font-medium hover:bg-blue-700 transition">
+                           class="inline-flex items-center gap-2 rounded-xl bg-primary-600 text-white px-4 py-2.5 text-sm font-medium hover:bg-primary-700 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
@@ -22,16 +22,13 @@
             </div>
 
             @if(session('success'))
-                <div class="rounded-xl border border-green-200 bg-green-50 p-4 text-green-800 text-sm font-medium">
+                <div class="rounded-xl border border-success-100 bg-success-50 p-4 text-success-700 text-sm font-medium">
                     {{ session('success') }}
                 </div>
             @endif
 
             @if($courses->isEmpty())
-                <div class="bg-white rounded-2xl border border-dashed border-slate-200 p-10 text-center">
-                    <p class="font-semibold text-slate-700">No courses yet.</p>
-                    <p class="text-sm text-slate-500 mt-1">Check back soon.</p>
-                </div>
+                <x-empty-state icon="📚" title="No courses yet" description="Check back soon." class="!p-10" />
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($courses as $course)
@@ -49,7 +46,7 @@
                                 </a>
                             @else
                                 <a href="{{ route('courses.show', $course->id) }}"
-                                   class="w-full h-[180px] bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white">
+                                   class="w-full h-[180px] bg-gradient-to-br from-primary-500 to-accent-600 flex items-center justify-center text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
@@ -59,7 +56,7 @@
                             <div class="p-5 space-y-3">
                                 <div>
                                     <a href="{{ route('courses.show', $course->id) }}"
-                                       class="text-lg font-semibold text-slate-800 hover:text-blue-600 transition">
+                                       class="text-lg font-semibold text-slate-800 hover:text-primary-600 transition">
                                         {{ $course->title }}
                                     </a>
 
@@ -96,7 +93,7 @@
                                         @if($canManage)
                                             <div class="flex items-center gap-2">
                                                 <a href="{{ route('courses.edit', $course->id) }}"
-                                                   class="inline-flex items-center bg-blue-600 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                                   class="inline-flex items-center bg-primary-600 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                                     Edit
                                                 </a>
 
@@ -105,7 +102,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                            class="inline-flex items-center bg-red-600 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-red-700 transition">
+                                                            class="inline-flex items-center bg-danger-600 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-danger-700 transition">
                                                         Delete
                                                     </button>
                                                 </form>
