@@ -175,6 +175,7 @@ class LessonDiscussionController extends Controller
                     return [
                         'id' => $reply->id,
                         'name' => optional($reply->user)->name ?? 'User',
+                        'role' => strtolower(optional($reply->user)->role ?? 'member'),
                         'body' => $reply->body,
                         'created_at_human' => $reply->created_at?->diffForHumans(),
                     ];

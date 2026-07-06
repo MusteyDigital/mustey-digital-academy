@@ -646,9 +646,15 @@
                                                                 @php
                                                                     $replyUser = optional($reply->user);
                                                                     $replyName = $replyUser->name ?? 'User';
+                                                                    $replyRole = strtolower($replyUser->role ?? 'member');
                                                                 @endphp
-                                                                <div class="rounded-xl border border-primary-100 bg-primary-50/60 p-4">
-                                                                    <div class="text-sm font-semibold text-slate-800">{{ $replyName }}</div>
+                                                                <div class="rounded-xl border p-4 {{ $replyRole === 'instructor' ? 'border-l-4 border-primary-500 bg-primary-50' : 'border-primary-100 bg-primary-50/60' }}">
+                                                                    <div class="flex items-center gap-2 flex-wrap">
+                                                                        <span class="text-sm font-semibold text-slate-800">{{ $replyName }}</span>
+                                                                        @if($replyRole === 'instructor')
+                                                                            <x-badge variant="primary" border>Instructor</x-badge>
+                                                                        @endif
+                                                                    </div>
                                                                     <div class="text-xs text-slate-500 mb-1">{{ $reply->created_at?->diffForHumans() }}</div>
                                                                     <div class="text-sm text-slate-700 whitespace-pre-line">{{ $reply->body }}</div>
                                                                 </div>
@@ -1100,13 +1106,22 @@ function replyToComment(commentId, name) {
             ? 'border-l-4 border-primary-500 bg-primary-50'
             : 'border-slate-200 bg-white';
 
-        const repliesHtml = (comment.replies || []).map(r => `
-            <div class="rounded-xl border border-primary-100 bg-primary-50/60 p-4">
-                <div class="text-sm font-semibold text-slate-800">${escapeHtml(r.name)}</div>
+        const repliesHtml = (comment.replies || []).map(r => {
+            const replyBorder = r.role === 'instructor' ? 'border-l-4 border-primary-500 bg-primary-50' : 'border-primary-100 bg-primary-50/60';
+            const replyBadge = r.role === 'instructor'
+                ? '<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-primary-300 bg-primary-50 text-primary-700">Instructor</span>'
+                : '';
+            return `
+            <div class="rounded-xl border p-4 ${replyBorder}">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-sm font-semibold text-slate-800">${escapeHtml(r.name)}</span>
+                    ${replyBadge}
+                </div>
                 <div class="text-xs text-slate-500 mb-1">${escapeHtml(r.created_at_human)}</div>
                 <div class="text-sm text-slate-700 whitespace-pre-line">${escapeHtml(r.body)}</div>
             </div>
-        `).join('');
+        `;
+        }).join('');
 
         return `
         <div id="comment-${comment.id}" class="comment-item newly-arrived rounded-2xl p-5 border transition ${borderClass}">
