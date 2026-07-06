@@ -10,7 +10,7 @@ class AdminCouponController extends Controller
 {
     public function index()
     {
-        $coupons = Coupon::latest()->paginate(20);
+        $coupons = Coupon::withCount('redemptions')->latest()->paginate(20);
 
         return view('admin.coupons.index', compact('coupons'));
     }
@@ -23,6 +23,8 @@ class AdminCouponController extends Controller
             'value' => ['required', 'integer', 'min:1'],
             'is_active' => ['nullable', 'boolean'],
             'expires_at' => ['nullable', 'date'],
+            'max_uses' => ['nullable', 'integer', 'min:1'],
+            'per_user_limit' => ['nullable', 'integer', 'min:1'],
         ]);
 
         Coupon::create([
@@ -31,6 +33,8 @@ class AdminCouponController extends Controller
             'value' => $validated['value'],
             'is_active' => (bool) ($validated['is_active'] ?? false),
             'expires_at' => $validated['expires_at'] ?? null,
+            'max_uses' => $validated['max_uses'] ?? null,
+            'per_user_limit' => $validated['per_user_limit'] ?? 1,
         ]);
 
         return redirect()->route('admin.coupons.index')
@@ -45,6 +49,8 @@ class AdminCouponController extends Controller
             'value' => ['required', 'integer', 'min:1'],
             'is_active' => ['nullable', 'boolean'],
             'expires_at' => ['nullable', 'date'],
+            'max_uses' => ['nullable', 'integer', 'min:1'],
+            'per_user_limit' => ['nullable', 'integer', 'min:1'],
         ]);
 
         $coupon->update([
@@ -53,6 +59,8 @@ class AdminCouponController extends Controller
             'value' => $validated['value'],
             'is_active' => (bool) ($validated['is_active'] ?? false),
             'expires_at' => $validated['expires_at'] ?? null,
+            'max_uses' => $validated['max_uses'] ?? null,
+            'per_user_limit' => $validated['per_user_limit'] ?? 1,
         ]);
 
         return redirect()->route('admin.coupons.index')

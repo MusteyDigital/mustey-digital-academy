@@ -19,7 +19,7 @@
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <h3 class="font-semibold text-slate-800 text-lg mb-4">Create Coupon</h3>
 
-        <form method="POST" action="{{ route('admin.coupons.store') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <form method="POST" action="{{ route('admin.coupons.store') }}" class="grid grid-cols-1 md:grid-cols-7 gap-4">
             @csrf
 
             <div>
@@ -50,6 +50,20 @@
                        class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
             </div>
 
+            <div>
+                <label class="text-sm font-medium text-slate-600 mb-1 block">Max Total Uses</label>
+                <input type="number" name="max_uses" value="{{ old('max_uses') }}" min="1"
+                       class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                       placeholder="Unlimited">
+            </div>
+
+            <div>
+                <label class="text-sm font-medium text-slate-600 mb-1 block">Per-User Limit</label>
+                <input type="number" name="per_user_limit" value="{{ old('per_user_limit', 1) }}" min="1"
+                       class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                       placeholder="1">
+            </div>
+
             <div class="flex items-end gap-4">
                 <label class="inline-flex items-center gap-2 pb-2.5">
                     <input type="checkbox" name="is_active" value="1" checked
@@ -76,6 +90,8 @@
                         <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Code</th>
                         <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Type</th>
                         <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Value</th>
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Uses</th>
+                        <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Per-User Limit</th>
                         <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Status</th>
                         <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Expires</th>
                         <th class="text-left py-3 px-4 text-xs uppercase tracking-wide text-slate-500 font-medium">Actions</th>
@@ -92,6 +108,12 @@
                                 @else
                                     ₦{{ number_format($coupon->value) }}
                                 @endif
+                            </td>
+                            <td class="py-3 px-4 text-slate-700">
+                                {{ $coupon->redemptions_count }} / {{ $coupon->max_uses ?? '∞' }}
+                            </td>
+                            <td class="py-3 px-4 text-slate-700">
+                                {{ $coupon->per_user_limit }}
                             </td>
                             <td class="py-3 px-4">
                                 <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold {{ $coupon->is_active ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-slate-100 text-slate-600 border border-slate-200' }}">
@@ -130,6 +152,19 @@
                                                    value="{{ $coupon->expires_at ? $coupon->expires_at->format('Y-m-d\\TH:i') : '' }}"
                                                    class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
 
+                                            <div>
+                                                <label class="text-xs font-medium text-slate-500 mb-1 block">Max Total Uses (blank = unlimited)</label>
+                                                <input type="number" name="max_uses" value="{{ $coupon->max_uses }}" min="1"
+                                                       class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                                       placeholder="Unlimited">
+                                            </div>
+
+                                            <div>
+                                                <label class="text-xs font-medium text-slate-500 mb-1 block">Per-User Limit</label>
+                                                <input type="number" name="per_user_limit" value="{{ $coupon->per_user_limit }}" min="1"
+                                                       class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                                            </div>
+
                                             <label class="inline-flex items-center gap-2">
                                                 <input type="checkbox" name="is_active" value="1" {{ $coupon->is_active ? 'checked' : '' }}
                                                        class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
@@ -157,7 +192,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-10 px-4 text-slate-500 text-center">No coupons found.</td>
+                            <td colspan="8" class="py-10 px-4 text-slate-500 text-center">No coupons found.</td>
                         </tr>
                     @endforelse
                 </tbody>
