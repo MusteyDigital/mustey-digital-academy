@@ -215,11 +215,11 @@
                                 @endphp
                                 <div class="mt-2">
                                     @if($status === 'pending')
-                                        <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">⏳ Pending Submission</span>
+                                        <x-badge variant="warning">⏳ Pending Submission</x-badge>
                                     @elseif($status === 'submitted')
-                                        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold">📤 Submitted – Awaiting Grade</span>
+                                        <x-badge variant="primary">📤 Submitted – Awaiting Grade</x-badge>
                                     @elseif($status === 'graded')
-                                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-semibold">✅ Graded</span>
+                                        <x-badge variant="success">✅ Graded</x-badge>
                                     @endif
                                 </div>
                             @endif
@@ -470,9 +470,7 @@
 
                                         @if(auth()->check() && in_array(auth()->user()->role, ['instructor', 'admin']) && !$lessonQuiz->is_published)
                                             <div class="mt-2">
-                                                <span class="inline-flex items-center rounded-full bg-amber-100 text-amber-800 px-3 py-1 text-xs font-semibold">
-                                                    Draft / Unpublished
-                                                </span>
+                                                <x-badge variant="warning">Draft / Unpublished</x-badge>
                                             </div>
                                         @endif
                                     </div>
@@ -618,21 +616,15 @@
                                                     <span class="font-semibold text-slate-800">{{ $commentName }}</span>
 
                                                     @if($commentRole === 'instructor')
-                                                        <span class="inline-flex items-center rounded-full border border-blue-200 bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
-                                                            Instructor
-                                                        </span>
+                                                        <x-badge variant="primary" border>Instructor</x-badge>
                                                     @endif
 
                                                     @if($comment->is_pinned)
-                                                        <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
-                                                            📌 Pinned
-                                                        </span>
+                                                        <x-badge variant="warning" border>📌 Pinned</x-badge>
                                                     @endif
 
                                                     @if($comment->is_answer)
-                                                        <span class="inline-flex items-center rounded-full bg-green-100 text-green-800 border border-green-200 px-2.5 py-0.5 text-xs font-semibold">
-                                                            ✅ Answered
-                                                        </span>
+                                                        <x-badge variant="success" border>✅ Answered</x-badge>
                                                     @endif
                                                 </div>
 
@@ -647,9 +639,7 @@
                                                 @if($comment->replies->count())
                                                     <details class="mt-4" open>
                                                         <summary class="cursor-pointer list-none mb-2">
-                                                            <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-blue-800 border border-blue-200">
-                                                                {{ $comment->replies->count() }} {{ $comment->replies->count() === 1 ? 'Reply' : 'Replies' }}
-                                                            </span>
+                                                            <x-badge variant="primary" border>{{ $comment->replies->count() }} {{ $comment->replies->count() === 1 ? 'Reply' : 'Replies' }}</x-badge>
                                                         </summary>
                                                         <div class="mt-3 space-y-3 border-l-2 border-blue-200 pl-4">
                                                             @foreach($comment->replies as $reply)
