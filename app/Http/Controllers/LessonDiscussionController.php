@@ -111,4 +111,64 @@ class LessonDiscussionController extends Controller
 
         return back()->with('success', 'Answer marked.');
     }
+
+    public function poll(Request $request, Course $course, Lesson $lesson)
+    {
+        $user = auth()->user();
+        abort_unless($user, 403);
+
+        if ($lesson->course_id !== $course->id) {
+            abort(404);
+        }
+
+        if ($user->role === 'student') {
+            $isEnrolled = $user->coursesEnrolled()
+                ->where('courses.id', $course->id)
+                ->exists();
+
+            abort_unless($isEnrolled, 403);
+        }
+
+        if ($user->role === 'instructor' && $course->instructor_id !== $user->id) {
+            abort(403);
+        }
+
+        $afterId = (int) $request->query('after_id', 0);
+
+        $messages = LessonDiscussionMessage::where('lesson_id', $lesson->id)
+            ->whereNull('parent_id')
+            ->where('id', '>', $afterId)
+            ->with(['user', 'replies.user'])
+            ->orderBy('created_at')
+            ->get();
+
+        $formatted = $messages->map(function ($comment) {
+            $commentUser = optional($comment->user);
+            $commentRole = strtolower($commentUser->role ?? 'member');
+
+            return [
+                'id' => $comment->id,
+                'name' => $commentUser->name ?? 'User',
+                'role' => $commentRole,
+                'body' => $comment->body,
+                'is_pinned' => (bool) $comment->is_pinned,
+                'is_answer' => (bool) $comment->is_answer,
+                'created_at_human' => $comment->created_at?->diffForHumans(),
+                'user_id' => $comment->user_id,
+                'replies' => $comment->replies->map(function ($reply) {
+                    return [
+                        'id' => $reply->id,
+                        'name' => optional($reply->user)->name ?? 'User',
+                        'body' => $reply->body,
+                        'created_at_human' => $reply->created_at?->diffForHumans(),
+                    ];
+                })->values(),
+            ];
+        })->values();
+
+        return response()->json([
+            'messages' => $formatted,
+            'latest_id' => $messages->max('id') ?? $afterId,
+        ]);
+    }
 }

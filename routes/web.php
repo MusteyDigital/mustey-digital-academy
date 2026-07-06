@@ -240,6 +240,8 @@ Route::middleware(['auth', 'block.demo.writes'])->group(function () {
 
     Route::post('/courses/{course}/lessons/{lesson}/discussion/{message}/mark-answer', [LessonDiscussionController::class, 'markAnswer'])
         ->name('lessons.discussion.mark-answer');
+    Route::get('/courses/{course}/lessons/{lesson}/discussion/poll', [LessonDiscussionController::class, 'poll'])
+        ->name('lessons.discussion.poll');
 
     Route::post('/courses/{course}/lessons/{lesson}/assignment', [LessonAssignmentController::class, 'store'])
         ->name('assignments.store');

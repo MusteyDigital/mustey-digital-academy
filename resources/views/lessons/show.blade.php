@@ -586,11 +586,11 @@
                         @endauth
 
                         @if($lessonComments->isEmpty())
-                            <div class="rounded-2xl border border-dashed border-slate-200 p-8 bg-slate-50 text-center text-slate-500 text-sm">
+                            <div id="discussion-empty-state" class="rounded-2xl border border-dashed border-slate-200 p-8 bg-slate-50 text-center text-slate-500 text-sm">
                                 No discussion yet. Be the first to ask a question or share an idea.
                             </div>
                         @else
-                            <div class="space-y-4">
+                            <div id="discussion-comments-list" class="space-y-4" data-latest-id="{{ $lessonComments->max('id') }}">
                                 @foreach($lessonComments as $comment)
                                     @php
                                         $commentUser = optional($comment->user);
@@ -1052,9 +1052,144 @@ function replyToComment(commentId, name) {
     if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
+<script>
+(function() {
+    const pollUrl = "{{ route('lessons.discussion.poll', [$course->id, $lesson->id]) }}";
+    const POLL_INTERVAL_MS = 6000;
+    let isTyping = false;
+    let typingTimeout = null;
+
+    const textarea = document.querySelector('#lesson-discussion textarea[name="body"]');
+    if (textarea) {
+        textarea.addEventListener('input', () => {
+            isTyping = true;
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => { isTyping = false; }, 4000);
+        });
+    }
+
+    const avatarColors = ['bg-rose-100 text-rose-700', 'bg-amber-100 text-amber-700', 'bg-emerald-100 text-emerald-700', 'bg-sky-100 text-sky-700', 'bg-violet-100 text-violet-700', 'bg-pink-100 text-pink-700', 'bg-teal-100 text-teal-700'];
+
+    function colorForUser(userId) {
+        const idx = Math.abs(userId) % avatarColors.length;
+        return avatarColors[idx];
+    }
+
+    function initials(name) {
+        return (name || 'U').trim().split(/\s+/).map(p => p[0]).slice(0, 2).join('').toUpperCase() || 'U';
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
+    function renderComment(comment) {
+        const roleLabel = comment.role.charAt(0).toUpperCase() + comment.role.slice(1);
+        const instructorBadge = comment.role === 'instructor'
+            ? '<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-primary-300 bg-primary-50 text-primary-700">Instructor</span>'
+            : '';
+        const pinnedBadge = comment.is_pinned
+            ? '<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-warning-300 bg-warning-50 text-warning-700">📌 Pinned</span>'
+            : '';
+        const answerBadge = comment.is_answer
+            ? '<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-success-300 bg-success-50 text-success-700">✅ Answered</span>'
+            : '';
+        const borderClass = comment.role === 'instructor'
+            ? 'border-l-4 border-primary-500 bg-primary-50'
+            : 'border-slate-200 bg-white';
+
+        const repliesHtml = (comment.replies || []).map(r => `
+            <div class="rounded-xl border border-primary-100 bg-primary-50/60 p-4">
+                <div class="text-sm font-semibold text-slate-800">${escapeHtml(r.name)}</div>
+                <div class="text-xs text-slate-500 mb-1">${escapeHtml(r.created_at_human)}</div>
+                <div class="text-sm text-slate-700 whitespace-pre-line">${escapeHtml(r.body)}</div>
+            </div>
+        `).join('');
+
+        return `
+        <div id="comment-${comment.id}" class="comment-item newly-arrived rounded-2xl p-5 border transition ${borderClass}">
+            <div class="flex items-start gap-3 flex-wrap">
+                <div class="w-10 h-10 rounded-full ${colorForUser(comment.user_id)} flex items-center justify-center font-bold text-sm shrink-0">
+                    ${initials(comment.name)}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-semibold text-slate-800">${escapeHtml(comment.name)}</span>
+                        ${instructorBadge}
+                        ${pinnedBadge}
+                        ${answerBadge}
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">${roleLabel} • ${escapeHtml(comment.created_at_human)}</div>
+                    <div class="mt-2 text-sm text-slate-700 whitespace-pre-line leading-6">${escapeHtml(comment.body)}</div>
+                    ${comment.replies && comment.replies.length ? `
+                        <details class="mt-4" open>
+                            <summary class="cursor-pointer list-none mb-2">
+                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-primary-300 bg-primary-50 text-primary-700">${comment.replies.length} ${comment.replies.length === 1 ? 'Reply' : 'Replies'}</span>
+                            </summary>
+                            <div class="mt-3 space-y-3 border-l-2 border-primary-200 pl-4">${repliesHtml}</div>
+                        </details>
+                    ` : ''}
+                </div>
+            </div>
+        </div>`;
+    }
+
+    async function poll() {
+        if (isTyping || document.hidden) return;
+
+        const listEl = document.getElementById('discussion-comments-list');
+        const afterId = listEl ? (listEl.dataset.latestId || '0') : '0';
+
+        try {
+            const res = await fetch(pollUrl + '?after_id=' + afterId, {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            if (!data.messages || !data.messages.length) return;
+
+            let container = document.getElementById('discussion-comments-list');
+            if (!container) {
+                const emptyState = document.getElementById('discussion-empty-state');
+                container = document.createElement('div');
+                container.id = 'discussion-comments-list';
+                container.className = 'space-y-4';
+                if (emptyState) {
+                    emptyState.replaceWith(container);
+                }
+            }
+
+            data.messages.forEach(comment => {
+                container.insertAdjacentHTML('beforeend', renderComment(comment));
+            });
+
+            container.dataset.latestId = data.latest_id;
+
+            const countBadge = document.querySelector('#lesson-discussion summary .text-slate-500');
+            if (countBadge) {
+                const current = document.querySelectorAll('#discussion-comments-list .comment-item').length;
+                countBadge.textContent = '(' + current + ')';
+            }
+        } catch (e) {
+            // silent fail, will retry next interval
+        }
+    }
+
+    setInterval(poll, POLL_INTERVAL_MS);
+})();
+</script>
 
 <style>
 details > summary::-webkit-details-marker { display: none; }
+.newly-arrived {
+    animation: discussion-fade-in 1.2s ease-out;
+}
+@keyframes discussion-fade-in {
+    0% { background-color: rgb(219 234 254); transform: translateY(-6px); opacity: 0; }
+    100% { background-color: inherit; transform: translateY(0); opacity: 1; }
+}
 </style>
 
 </x-app-layout>
