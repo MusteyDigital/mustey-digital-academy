@@ -145,19 +145,19 @@
             </a>
 
             @if(session('success'))
-                <div class="rounded-xl border border-green-200 bg-green-50 p-4 text-green-800 text-sm font-medium">
+                <div class="rounded-xl border border-success-200 bg-success-50 p-4 text-success-800 text-sm font-medium">
                     {{ session('success') }}
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-800 text-sm font-medium">
+                <div class="rounded-xl border border-danger-200 bg-danger-50 p-4 text-danger-800 text-sm font-medium">
                     {{ session('error') }}
                 </div>
             @endif
 
             @if($errors->any())
-                <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-800">
+                <div class="rounded-xl border border-danger-200 bg-danger-50 p-4 text-danger-800">
                     <ul class="list-disc pl-5 text-sm">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -167,7 +167,7 @@
             @endif
 
             {{-- Hero --}}
-            <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+            <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-gradient-to-br from-primary-600 to-accent-700 text-white">
                 @if(!empty($course->thumbnail))
                     <div class="absolute inset-0">
                         <img
@@ -177,13 +177,13 @@
                             loading="lazy"
                         >
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-700/90 to-indigo-800/90"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary-700/90 to-accent-800/90"></div>
                 @endif
 
                 <div class="relative p-6 sm:p-8 space-y-4">
                     <div>
                         <h1 class="text-2xl sm:text-3xl font-bold">{{ $course->title }}</h1>
-                        <p class="text-blue-50/90 mt-2 max-w-3xl">{{ $course->description ?? 'No description yet.' }}</p>
+                        <p class="text-primary-50/90 mt-2 max-w-3xl">{{ $course->description ?? 'No description yet.' }}</p>
                     </div>
 
                     <div class="flex flex-wrap gap-2 text-sm">
@@ -339,11 +339,11 @@
                                                name="coupon_code"
                                                value="{{ old('coupon_code') }}"
                                                placeholder="Enter coupon code"
-                                               class="w-full rounded-xl border-slate-300 focus:border-blue-500 focus:ring-blue-500">
+                                               class="w-full rounded-xl border-slate-300 focus:border-primary-500 focus:ring-primary-500">
                                     </div>
 
                                     <button type="submit"
-                                            class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                            class="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                         Pay & Enroll
                                     </button>
                                 </form>
@@ -355,7 +355,7 @@
                                 <form method="POST" action="{{ route('payments.initialize', $course->id) }}">
                                     @csrf
                                     <button type="submit"
-                                            class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                            class="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                         Enroll Free
                                     </button>
                                 </form>
@@ -366,7 +366,7 @@
                             @endif
                         @else
                             <div class="flex flex-wrap gap-3 items-center">
-                                <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 text-green-700 px-3 py-1.5 text-sm font-semibold">
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-success-100 text-success-700 px-3 py-1.5 text-sm font-semibold">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                     </svg>
@@ -377,7 +377,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                            class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition">
+                                            class="inline-flex items-center px-4 py-2 bg-danger-600 text-white rounded-xl text-sm font-medium hover:bg-danger-700 transition">
                                         Unenroll
                                     </button>
                                 </form>
@@ -408,7 +408,7 @@
 
                         <div class="mt-4">
                             @if (session('success'))
-                                <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                                <div class="mb-4 rounded-xl border border-success-200 bg-success-50 px-4 py-3 text-sm text-success-700">
                                     {{ session('success') }}
                                 </div>
                             @endif
@@ -421,7 +421,7 @@
                                     @php
                                         $replyTarget = $courseChatMessages->firstWhere('id', (int) request('reply_to'));
                                     @endphp
-                                    <div class="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-700">
+                                    <div class="rounded-xl border border-primary-200 bg-primary-50 px-3 py-2 text-sm text-primary-700">
                                         Replying to {{ optional(optional($replyTarget)->user)->name ?? 'this message' }}
                                         <a href="{{ route('courses.show', $course->id) }}#course-chat" class="ml-2 underline">Cancel</a>
                                     </div>
@@ -432,13 +432,13 @@
                                     <textarea
                                         name="body"
                                         rows="4"
-                                        class="w-full rounded-xl border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                                        class="w-full rounded-xl border-slate-300 focus:border-primary-500 focus:ring-primary-500"
                                         placeholder="Write a message..."
                                         required>{{ old('body') }}</textarea>
                                 </div>
 
                                 <button type="submit"
-                                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                        class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                     Post Message
                                 </button>
                             </form>
@@ -462,7 +462,7 @@
                                             ->implode('');
                                     @endphp
 
-                                    <div class="rounded-xl p-4 {{ $messageRole === 'instructor' ? 'border-l-4 border-blue-500 bg-blue-50' : 'border border-slate-200 bg-white' }}">
+                                    <div class="rounded-xl p-4 {{ $messageRole === 'instructor' ? 'border-l-4 border-primary-500 bg-primary-50' : 'border border-slate-200 bg-white' }}">
                                         <div class="flex items-start justify-between gap-3 flex-wrap">
                                             <div class="flex items-start gap-3">
                                                 <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-semibold text-sm shrink-0">
@@ -476,13 +476,13 @@
                                                         </div>
 
                                                         @if($messageRole === 'instructor')
-                                                            <span class="inline-flex items-center rounded-full bg-blue-100 text-blue-700 border border-blue-200 px-2.5 py-0.5 text-xs font-semibold">
+                                                            <span class="inline-flex items-center rounded-full bg-primary-100 text-primary-700 border border-primary-200 px-2.5 py-0.5 text-xs font-semibold">
                                                                 Instructor
                                                             </span>
                                                         @endif
 
                                                         @if($message->is_pinned)
-                                                            <span class="inline-flex items-center gap-1 rounded-full bg-yellow-100 text-yellow-800 border border-yellow-200 px-2.5 py-0.5 text-xs font-semibold">
+                                                            <span class="inline-flex items-center gap-1 rounded-full bg-warning-100 text-warning-800 border border-warning-200 px-2.5 py-0.5 text-xs font-semibold">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M16 3a1 1 0 011 1v6.5l2.4 3.6a1 1 0 01-.83 1.56H13v5.34a1 1 0 11-2 0V15.66H5.43a1 1 0 01-.83-1.56L7 10.5V4a1 1 0 011-1h8z"/></svg>
                                                                 Pinned
                                                             </span>
@@ -527,13 +527,13 @@
                                             @if(auth()->check() && in_array(auth()->user()->role, ['instructor', 'admin']))
                                                 <form method="POST" action="{{ route('courses.chat.pin', [$course->id, $message->id]) }}">
                                                     @csrf
-                                                    <button class="text-yellow-700 hover:underline font-medium">
+                                                    <button class="text-warning-700 hover:underline font-medium">
                                                         {{ $message->is_pinned ? 'Unpin' : 'Pin' }}
                                                     </button>
                                                 </form>
                                             @endif
 
-                                            <a href="{{ route('courses.show', $course->id) }}?reply_to={{ $message->id }}#course-chat" class="text-blue-600 hover:underline font-medium">Reply</a>
+                                            <a href="{{ route('courses.show', $course->id) }}?reply_to={{ $message->id }}#course-chat" class="text-primary-600 hover:underline font-medium">Reply</a>
 
                                             @if(auth()->check() && (auth()->id() === $message->user_id || in_array(auth()->user()->role, ['instructor', 'admin'])))
                                                 <form method="POST"
@@ -541,7 +541,7 @@
                                                       onsubmit="return confirm('Delete this message?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button class="text-red-600 hover:underline font-medium">
+                                                    <button class="text-danger-600 hover:underline font-medium">
                                                         Delete
                                                     </button>
                                                 </form>
@@ -573,14 +573,14 @@
                             <div>
                                 @if($nextUnfinishedLesson)
                                     <a href="{{ route('lessons.show', [$course->id, $nextUnfinishedLesson->id]) }}"
-                                       class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                       class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                         Continue Learning
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                         </svg>
                                     </a>
                                 @elseif($allLessonsCount > 0 && $percent === 100)
-                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 text-green-700 px-3 py-2 text-sm font-semibold">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-success-100 text-success-700 px-3 py-2 text-sm font-semibold">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                         </svg>
@@ -591,7 +591,7 @@
                         </div>
 
                         <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                            <div class="h-2.5 rounded-full transition-all {{ $percent == 100 ? 'bg-green-500' : 'bg-blue-600' }}" style="width: {{ $percent }}%;"></div>
+                            <div class="h-2.5 rounded-full transition-all {{ $percent == 100 ? 'bg-success-500' : 'bg-primary-600' }}" style="width: {{ $percent }}%;"></div>
                         </div>
 
                         <p class="text-sm text-slate-700">
@@ -599,10 +599,10 @@
                         </p>
 
                         @if($allLessonsCount > 0 && $percent === 100)
-                            <div class="rounded-xl border border-green-200 bg-green-50 p-4">
+                            <div class="rounded-xl border border-success-200 bg-success-50 p-4">
                                 <h3 class="font-semibold text-slate-800 mb-2">Certificate</h3>
                                 <a href="{{ route('certificates.download', $course->id) }}"
-                                   class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                   class="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                     Download Certificate (PDF)
                                 </a>
                                 <p class="text-xs text-slate-600 mt-2">
@@ -627,14 +627,14 @@
                         @if($isInstructorOwner || $isAdmin)
                             @if($course->activeLiveSession)
                                 <a href="{{ route('live-sessions.show', $course->activeLiveSession->id) }}"
-                                   class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-medium hover:bg-green-700 transition">
+                                   class="inline-flex items-center px-4 py-2 bg-success-600 text-white rounded-xl text-sm font-medium hover:bg-success-700 transition">
                                     Rejoin Live Session
                                 </a>
                             @else
                                 <form method="POST" action="{{ route('live-sessions.start', $course->id) }}">
                                     @csrf
                                     <button type="submit"
-                                            class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-medium hover:bg-green-700 transition">
+                                            class="inline-flex items-center px-4 py-2 bg-success-600 text-white rounded-xl text-sm font-medium hover:bg-success-700 transition">
                                         Start Live Session
                                     </button>
                                 </form>
@@ -646,21 +646,21 @@
                 @auth
                     @if($isStudent)
                         @if($course->activeLiveSession)
-                            <div class="rounded-xl border border-green-200 bg-green-50 p-4 space-y-3">
+                            <div class="rounded-xl border border-success-200 bg-success-50 p-4 space-y-3">
                                 <div class="flex items-center justify-between flex-wrap gap-2">
-                                    <div class="text-sm text-green-800 font-semibold">
+                                    <div class="text-sm text-success-800 font-semibold">
                                         A live class is currently active.
                                     </div>
 
-                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 text-green-700 px-3 py-1 text-xs font-semibold">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse"></span>
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-success-100 text-success-700 px-3 py-1 text-xs font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-success-600 animate-pulse"></span>
                                         Live Now
                                     </span>
                                 </div>
 
                                 <div class="pt-2">
                                     <a href="{{ route('live-sessions.show', $course->activeLiveSession->id) }}"
-                                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                       class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                         Join Live Session
                                     </a>
                                 </div>
@@ -710,7 +710,7 @@
                                 </span>
                             </div>
 
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 text-green-700 px-3 py-1 text-xs font-semibold">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-success-100 text-success-700 px-3 py-1 text-xs font-semibold">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                 </svg>
@@ -720,7 +720,7 @@
 
                         <div class="text-sm text-slate-700 break-all">
                             <span class="font-semibold">Meeting URL:</span>
-                            <a class="underline text-blue-600 ml-1" href="{{ $course->meeting_url }}" target="_blank">
+                            <a class="underline text-primary-600 ml-1" href="{{ $course->meeting_url }}" target="_blank">
                                 {{ $course->meeting_url }}
                             </a>
                         </div>
@@ -729,7 +729,7 @@
                             @auth
                                 @if($isStudent)
                                     <a href="{{ $course->meeting_url }}" target="_blank"
-                                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                       class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                         Join Class
                                     </a>
                                 @else
@@ -745,7 +745,7 @@
                                     <form method="POST" action="{{ route('attendance.live.store', $course->id) }}">
                                         @csrf
                                         <button type="submit"
-                                                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                                class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                             Mark Live Attendance
                                         </button>
                                     </form>
@@ -784,7 +784,7 @@
                     @auth
                         @if($isInstructorOwner || $isAdmin)
                             <a href="{{ route('quizzes.create', $course->id) }}"
-                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                               class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                 + Create Quiz
                             </a>
                         @endif
@@ -817,11 +817,11 @@
                                             <h4 class="font-semibold text-lg text-slate-800">{{ $quizItem->title }}</h4>
 
                                             @if($quizItem->is_published)
-                                                <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
+                                                <span class="inline-flex items-center rounded-full bg-success-50 text-success-700 border border-success-200 px-3 py-1 text-xs font-semibold">
                                                     Published
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
+                                                <span class="inline-flex items-center rounded-full bg-warning-50 text-warning-700 border border-warning-200 px-3 py-1 text-xs font-semibold">
                                                     Draft
                                                 </span>
                                             @endif
@@ -855,13 +855,13 @@
                                                     @method('DELETE')
 
                                                     <button type="submit"
-                                                            class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition">
+                                                            class="inline-flex items-center px-4 py-2 bg-danger-600 text-white rounded-xl text-sm font-medium hover:bg-danger-700 transition">
                                                         Delete
                                                     </button>
                                                 </form>
 
                                                 <a href="{{ route('instructor.quizzes.analytics', [$course->id, $quizItem->id]) }}"
-                                                   class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition">
+                                                   class="inline-flex items-center px-4 py-2 bg-accent-600 text-white rounded-xl text-sm font-medium hover:bg-accent-700 transition">
                                                     Analytics
                                                 </a>
                                             @endif
@@ -886,7 +886,7 @@
                     @auth
                         @if($isInstructorOwner)
                             <a href="{{ route('lessons.create', $course->id) }}"
-                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                               class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                 + Add Lesson
                             </a>
                         @endif
@@ -894,7 +894,7 @@
                 </div>
 
                 @if($isStudent && !$enrolled)
-                    <div class="rounded-xl border border-yellow-200 bg-yellow-50 p-4 text-yellow-900 text-sm">
+                    <div class="rounded-xl border border-warning-200 bg-warning-50 p-4 text-warning-900 text-sm">
                         Enroll to access lessons.
                     </div>
                 @endif
@@ -950,11 +950,11 @@
 
                                             @if($unassignedNextLesson)
                                                 <a href="{{ route('lessons.show', [$course->id, $unassignedNextLesson->id]) }}"
-                                                   class="inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                                   class="inline-flex items-center px-3 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                                     Continue Module →
                                                 </a>
                                             @elseif($unassignedLessons->count() > 0)
-                                                <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-3 py-2 text-sm font-semibold">
+                                                <span class="inline-flex items-center rounded-full bg-success-100 text-success-700 px-3 py-2 text-sm font-semibold">
                                                     Completed
                                                 </span>
                                             @endif
@@ -966,7 +966,7 @@
                             @if($isStudent && $enrolled)
                                 <div class="px-5 py-3 bg-white border-b border-slate-100">
                                     <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                                        <div class="bg-green-500 h-2 rounded-full" style="width: {{ $unassignedPercent }}%;"></div>
+                                        <div class="bg-success-500 h-2 rounded-full" style="width: {{ $unassignedPercent }}%;"></div>
                                     </div>
                                 </div>
                             @endif
@@ -1017,7 +1017,7 @@
                                         <a href="{{ route('lessons.show', [$course->id, $lesson->id]) }}"
                                            class="flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition">
                                             <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-sm shrink-0">
+                                                <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-semibold text-sm shrink-0">
                                                     {{ $index + 1 }}
                                                 </div>
 
@@ -1037,14 +1037,14 @@
 
                                             <div>
                                                 @if($isStudent && $done)
-                                                    <span class="inline-flex items-center gap-1 text-green-700 bg-green-50 border border-green-200 px-3 py-1 rounded-full text-sm font-medium">
+                                                    <span class="inline-flex items-center gap-1 text-success-700 bg-success-50 border border-success-200 px-3 py-1 rounded-full text-sm font-medium">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                                         </svg>
                                                         Completed
                                                     </span>
                                                 @else
-                                                    <span class="inline-flex items-center gap-1 text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+                                                    <span class="inline-flex items-center gap-1 text-primary-700 bg-primary-50 border border-primary-200 px-3 py-1 rounded-full text-sm font-medium">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
                                                         </svg>
@@ -1111,11 +1111,11 @@
 
                                                     @if($moduleNextLesson)
                                                         <a href="{{ route('lessons.show', [$course->id, $moduleNextLesson->id]) }}"
-                                                           class="inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition">
+                                                           class="inline-flex items-center px-3 py-2 bg-primary-600 text-white rounded-xl text-sm font-medium hover:bg-primary-700 transition">
                                                             Continue Module →
                                                         </a>
                                                     @elseif($moduleLessonCount > 0)
-                                                        <span class="inline-flex items-center rounded-full bg-green-100 text-green-700 px-3 py-2 text-sm font-semibold">
+                                                        <span class="inline-flex items-center rounded-full bg-success-100 text-success-700 px-3 py-2 text-sm font-semibold">
                                                             Completed
                                                         </span>
                                                     @endif
@@ -1127,7 +1127,7 @@
                                     @if($isStudent && $enrolled && $moduleLessonCount > 0)
                                         <div class="px-5 py-3 bg-white border-b border-slate-100">
                                             <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                                                <div class="bg-green-500 h-2 rounded-full" style="width: {{ $modulePercent }}%;"></div>
+                                                <div class="bg-success-500 h-2 rounded-full" style="width: {{ $modulePercent }}%;"></div>
                                             </div>
                                         </div>
                                     @endif
@@ -1183,7 +1183,7 @@
                                                     <a href="{{ route('lessons.show', [$course->id, $lesson->id]) }}"
                                                        class="flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition">
                                                         <div class="flex items-center gap-4">
-                                                            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-sm shrink-0">
+                                                            <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-semibold text-sm shrink-0">
                                                                 {{ $index + 1 }}
                                                             </div>
 
@@ -1203,14 +1203,14 @@
 
                                                         <div>
                                                             @if($isStudent && $done)
-                                                                <span class="inline-flex items-center gap-1 text-green-700 bg-green-50 border border-green-200 px-3 py-1 rounded-full text-sm font-medium">
+                                                                <span class="inline-flex items-center gap-1 text-success-700 bg-success-50 border border-success-200 px-3 py-1 rounded-full text-sm font-medium">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                                                     </svg>
                                                                     Completed
                                                                 </span>
                                                             @else
-                                                                <span class="inline-flex items-center gap-1 text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+                                                                <span class="inline-flex items-center gap-1 text-primary-700 bg-primary-50 border border-primary-200 px-3 py-1 rounded-full text-sm font-medium">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
                                                                     </svg>
