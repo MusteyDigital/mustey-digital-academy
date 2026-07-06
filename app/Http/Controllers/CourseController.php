@@ -46,6 +46,10 @@ class CourseController extends Controller
             'thumbnail' => ['nullable', 'image', 'max:2048'],
             'meeting_url' => ['nullable', 'url'],
             'starts_at' => ['nullable', 'date'],
+            'category' => ['nullable', 'string', 'max:100'],
+            'level' => ['nullable', 'string', 'max:100'],
+            'duration' => ['nullable', 'string', 'max:100'],
+            'is_featured' => ['nullable', 'boolean'],
         ]);
 
         $thumbnailPath = null;
@@ -62,6 +66,10 @@ class CourseController extends Controller
             'meeting_url' => $validated['meeting_url'] ?? null,
             'starts_at' => $validated['starts_at'] ?? null,
             'instructor_id' => $user->id,
+            'category' => $validated['category'] ?? null,
+            'level' => $validated['level'] ?? null,
+            'duration' => $validated['duration'] ?? null,
+            'is_featured' => $request->boolean('is_featured'),
         ]);
 
         return redirect()->route('courses.index')->with('success', 'Course created successfully.');
@@ -139,6 +147,10 @@ class CourseController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['nullable', 'integer', 'min:0'],
+            'category' => ['nullable', 'string', 'max:100'],
+            'level' => ['nullable', 'string', 'max:100'],
+            'duration' => ['nullable', 'string', 'max:100'],
+            'is_featured' => ['nullable', 'boolean'],
             'thumbnail' => ['nullable', 'image', 'max:2048'],
             'meeting_url' => ['nullable', 'url'],
             'starts_at' => ['nullable', 'date'],
@@ -153,6 +165,10 @@ class CourseController extends Controller
         $course->price = (int) ($validated['price'] ?? 0);
         $course->meeting_url = $validated['meeting_url'] ?? null;
         $course->starts_at = $validated['starts_at'] ?? null;
+        $course->category = $validated['category'] ?? null;
+        $course->level = $validated['level'] ?? null;
+        $course->duration = $validated['duration'] ?? null;
+        $course->is_featured = $request->boolean('is_featured');
         $course->save();
 
         return redirect()->route('courses.show', $course->id)->with('success', 'Course updated successfully.');

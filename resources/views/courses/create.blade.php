@@ -73,6 +73,55 @@
                         <p class="text-xs text-slate-500 mt-1">Enter 0 for a free course.</p>
                     </div>
 
+                    {{-- Category / Level / Duration --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Category</label>
+                            <input
+                                type="text"
+                                name="category"
+                                value="{{ old('category') }}"
+                                class="w-full rounded-xl border-slate-300 focus:border-primary-500 focus:ring-primary-500"
+                                placeholder="e.g. Web Development"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Level</label>
+                            <select
+                                name="level"
+                                class="w-full rounded-xl border-slate-300 focus:border-primary-500 focus:ring-primary-500"
+                            >
+                                <option value="">Select level</option>
+                                <option value="Beginner" {{ old('level') === 'Beginner' ? 'selected' : '' }}>Beginner</option>
+                                <option value="Intermediate" {{ old('level') === 'Intermediate' ? 'selected' : '' }}>Intermediate</option>
+                                <option value="Advanced" {{ old('level') === 'Advanced' ? 'selected' : '' }}>Advanced</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Duration</label>
+                            <input
+                                type="text"
+                                name="duration"
+                                value="{{ old('duration') }}"
+                                class="w-full rounded-xl border-slate-300 focus:border-primary-500 focus:ring-primary-500"
+                                placeholder="e.g. 4 weeks"
+                            >
+                        </div>
+                    </div>
+
+                    {{-- Featured --}}
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            name="is_featured"
+                            id="is_featured"
+                            value="1"
+                            {{ old('is_featured') ? 'checked' : '' }}
+                            class="rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+                        >
+                        <label for="is_featured" class="text-sm font-medium text-slate-700">Feature this course on the homepage</label>
+                    </div>
+
                     {{-- Thumbnail --}}
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1">Thumbnail (optional)</label>
