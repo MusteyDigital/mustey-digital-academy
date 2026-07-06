@@ -63,6 +63,20 @@
                                     <p class="text-sm text-slate-500 mt-1 line-clamp-2">
                                         {{ $course->description ?? 'No description yet.' }}
                                     </p>
+
+                                    @if($course->category || $course->level || $course->duration)
+                                        <div class="flex flex-wrap gap-2 mt-2">
+                                            @if($course->category)
+                                                <x-badge variant="primary">{{ $course->category }}</x-badge>
+                                            @endif
+                                            @if($course->level)
+                                                <x-badge variant="neutral">{{ $course->level }}</x-badge>
+                                            @endif
+                                            @if($course->duration)
+                                                <x-badge variant="neutral">{{ $course->duration }}</x-badge>
+                                            @endif
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <div class="flex items-center gap-1.5 text-sm text-slate-600">
