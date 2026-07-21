@@ -243,6 +243,11 @@ Route::middleware(['auth', 'block.demo.writes'])->group(function () {
     Route::get('/courses/{course}/lessons/{lesson}/discussion/poll', [LessonDiscussionController::class, 'poll'])
         ->name('lessons.discussion.poll');
 
+    Route::post('/courses/{course}/lessons/{lesson}/doubt', [\App\Http\Controllers\LessonDoubtController::class, 'store'])
+        ->name('lessons.doubt.store');
+    Route::get('/courses/{course}/lessons/{lesson}/doubt', [\App\Http\Controllers\LessonDoubtController::class, 'index'])
+    ->name('lessons.doubt.index');
+
     Route::post('/courses/{course}/lessons/{lesson}/assignment', [LessonAssignmentController::class, 'store'])
         ->name('assignments.store');
 

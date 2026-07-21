@@ -534,6 +534,65 @@
             @endif
 
             {{-- Discussion --}}
+            {{-- AI Doubt-Solver --}}
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6" id="lesson-doubt-solver" x-data="lessonDoubtSolver()" x-init="init()">
+                <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">🤖 Ask the AI Tutor</h3>
+                        <p class="text-sm text-slate-500 mt-0.5">Get an instant answer grounded in this lesson</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 max-h-96 overflow-y-auto pr-1 mb-4" x-ref="messageList">
+                    <template x-if="messages.length === 0 && !loading">
+                        <p class="text-sm text-slate-400 italic">Ask a question about this lesson to get started.</p>
+                    </template>
+
+                    <template x-for="msg in messages" :key="msg.id">
+                        <div class="flex" :class="msg.role === 'user' ? 'justify-end' : 'justify-start'">
+                            <div
+                                class="max-w-[85%] rounded-xl px-4 py-2.5 text-sm whitespace-pre-line"
+                                :class="msg.role === 'user'
+                                    ? 'bg-primary-600 text-white'
+                                    : (msg.status === 'failed' ? 'bg-danger-50 text-danger-800 border border-danger-200' : 'bg-slate-100 text-slate-700')"
+                                x-text="msg.body"
+                            ></div>
+                        </div>
+                    </template>
+
+                    <template x-if="loading">
+                        <div class="flex justify-start">
+                            <div class="max-w-[85%] rounded-xl px-4 py-2.5 text-sm bg-slate-100 text-slate-500 italic">
+                                Thinking…
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <template x-if="errorMessage">
+                    <div class="rounded-xl border border-danger-200 bg-danger-50 p-3 text-danger-800 text-sm mb-3" x-text="errorMessage"></div>
+                </template>
+
+                <form @submit.prevent="send" class="flex items-end gap-2">
+                    <textarea
+                        x-model="question"
+                        :disabled="loading"
+                        rows="2"
+                        maxlength="2000"
+                        placeholder="Ask a question about this lesson..."
+                        class="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-400 disabled:bg-slate-50 disabled:text-slate-400"
+                        @keydown.enter.prevent="if (!$event.shiftKey) send()"
+                    ></textarea>
+                    <button
+                        type="submit"
+                        :disabled="loading || !question.trim()"
+                        class="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white text-sm rounded-xl font-medium hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Ask
+                    </button>
+                </form>
+            </div>
+
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6" id="lesson-discussion">
                 <details>
                     <summary class="cursor-pointer list-none">
@@ -1208,3 +1267,73 @@ details > summary::-webkit-details-marker { display: none; }
 </style>
 
 </x-app-layout>
+
+<script>
+function lessonDoubtSolver() {
+    return {
+        messages: [],
+        question: '',
+        loading: false,
+        errorMessage: '',
+        indexUrl: "{{ route('lessons.doubt.index', [$course->id, $lesson->id]) }}",
+        storeUrl: "{{ route('lessons.doubt.store', [$course->id, $lesson->id]) }}",
+
+        async init() {
+            try {
+                const res = await fetch(this.indexUrl, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) return;
+                const data = await res.json();
+                this.messages = data.messages || [];
+                this.scrollToBottom();
+            } catch (e) {
+                // silent fail; widget just starts empty
+            }
+        },
+
+        async send() {
+            const question = this.question.trim();
+            if (!question || this.loading) return;
+
+            this.errorMessage = '';
+            this.loading = true;
+
+            const optimisticId = 'pending-' + Date.now();
+            this.messages.push({ id: optimisticId, role: 'user', body: question, status: 'complete' });
+            this.question = '';
+            this.scrollToBottom();
+
+            try {
+                const res = await fetch(this.storeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({ question }),
+                });
+
+                if (!res.ok) {
+                    throw new Error('Request failed');
+                }
+
+                const data = await res.json();
+                this.messages.push({ id: data.answer.id, role: 'assistant', body: data.answer.body, status: data.answer.status });
+            } catch (e) {
+                this.errorMessage = "Couldn't reach the AI tutor. Please check your connection and try again.";
+            } finally {
+                this.loading = false;
+                this.scrollToBottom();
+            }
+        },
+
+        scrollToBottom() {
+            this.$nextTick(() => {
+                if (this.$refs.messageList) {
+                    this.$refs.messageList.scrollTop = this.$refs.messageList.scrollHeight;
+                }
+            });
+        },
+    };
+}
+</script>
